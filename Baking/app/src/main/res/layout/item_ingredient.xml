@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="ingredient"
+            type="com.example.codelabs.baking.model.Ingredient"/>
+    </data>
+<RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_ingredient_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@{ingredient.mIngredientName}"/>
+
+    <TextView
+        android:id="@+id/text_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/text_ingredient_name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@{ingredient.mFormattedQuantity}"/>
+
+</RelativeLayout>
+</layout>
