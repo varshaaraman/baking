@@ -39,6 +39,7 @@ private RecyclerView mRecipeRecyclerView;
     private String[] mBuiltUrl = new String[1] ;
     private Intent mRecipeIntent;
     private static String mRawJson;
+    long count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,8 @@ private RecyclerView mRecipeRecyclerView;
         Stetho.initializeWithDefaults(this);
         loadRecipe();
     }
+
+
     private void loadRecipe() {
         //Connectivity check
         if (checkConnectivity()) {
@@ -104,14 +107,14 @@ private RecyclerView mRecipeRecyclerView;
     }
         public long bulkLoad(List<Recipe> recipeObjectList) {
 
-            long count = 0;
+
             SQLiteDatabase mSqliteDatabase;
             count = getRowsCount();
 
-//            if(count > 0)
-//            {
-//                deleteReceipes();
-//            }
+            if(count > 0)
+            {
+                deleteReceipes();
+            }
 
         RecipeDbHelper mRecipeDbHelper = new RecipeDbHelper(MainActivity.this);
         mSqliteDatabase = mRecipeDbHelper.getWritableDatabase();

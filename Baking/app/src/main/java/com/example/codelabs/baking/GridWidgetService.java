@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -77,7 +78,9 @@ class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public int getCount() {
         if (mCursor == null) return 0;
+        Log.d("widgettu",Integer.toString(mCursor.getCount()));
         return mCursor.getCount();
+
     }
 
     /**

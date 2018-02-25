@@ -161,6 +161,7 @@ public class RecipeContentProvider extends ContentProvider {
             // Handle the single item case, recognized by the ID included in the URI path
             case RECIPES:
                 moviesDeleted = db.delete(TABLE_NAME,null,null);
+                break;
 
             case RECIPES_WITH_ID:
                 // Get the task ID from the URI path

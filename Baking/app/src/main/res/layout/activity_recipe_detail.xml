@@ -12,12 +12,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/button_expand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rating_circle"
+                android:onClick="click_expand"/>
+            <TextView
+                android:id="@+id/text_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold"
+                android:layout_toRightOf="@id/button_expand"
+                android:text="Ingredients"/>
         <FrameLayout
             android:id="@+id/fragment_ingredient"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_heading"
+            android:layout_toRightOf="@id/button_expand">
         </FrameLayout>
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_recipe"
                 android:layout_width="match_parent"

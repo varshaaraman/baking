@@ -23,13 +23,13 @@ import java.util.List;
  */
 
 public class IngredientAdapter extends  RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
-    private Context mContext;
+    //private Context mContext;
     private String mKey;
     private List<Ingredient> mIngredientList = new ArrayList<>();
 
 
-    public IngredientAdapter(Context mcontext, List<Ingredient> mIngredientList) {
-        this.mContext = mcontext;
+    public IngredientAdapter( List<Ingredient> mIngredientList) {
+        //this.mContext = mcontext;
         this.mIngredientList = mIngredientList;
 
 
