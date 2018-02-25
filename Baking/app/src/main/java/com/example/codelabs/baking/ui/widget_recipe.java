@@ -3,8 +3,11 @@ package com.example.codelabs.baking.ui;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
+import com.example.codelabs.baking.GridWidgetService;
 import com.example.codelabs.baking.R;
 
 /**
@@ -15,14 +18,16 @@ public class widget_recipe extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_item_recipe);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
 
-        // Instruct the widget manager to update the widget
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_recipe);
+        Intent intent = new Intent(context, GridWidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId);
+        intent.setData(Uri.parse(
+                intent.toUri(Intent.URI_INTENT_SCHEME)));
+        views.setRemoteAdapter(R.id.listview_widget,intent);
+        //appWidgetManager.updateAppWidget(appWidgetId, views);
         appWidgetManager.updateAppWidget(appWidgetId, views);
-    }
+   }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
