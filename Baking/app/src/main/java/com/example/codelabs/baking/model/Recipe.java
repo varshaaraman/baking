@@ -33,6 +33,9 @@ public class Recipe implements Parcelable {
     public String mRecipeFirstLetter;
     public List<Ingredient> mIngredients = new ArrayList<>();
     public List<Step> mSteps = new ArrayList<>();
+    public String mRecipeMaxId;
+    public String mRecipeMinId;
+
 
     public String getmMaxId() {
         return mMaxId;
@@ -41,6 +44,7 @@ public class Recipe implements Parcelable {
     public String getmMinId() {
         return mMinId;
     }
+
 
     public String mMaxId;
     public String mMinId;

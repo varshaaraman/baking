@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <data>
+        <variable
+            name="stepdetail"
+            type="com.example.codelabs.baking.model.Step"/>
+    </data>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id = "@+id/root"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <TextView
+            android:id="@+id/text_step_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{stepdetail.mDescription}"
+            tools:text="sample step" />
+        <ImageButton
+            android:id="@+id/button_previous_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_skip_previous_black_24dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:onClick="click_navigation"
+            android:clickable="true"/>
+        <ImageButton
+            android:id="@+id/button_next_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_skip_next_black_24dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:onClick="click_navigation"
+            android:clickable="true"/>
+
+    </RelativeLayout>
+</layout>

@@ -2,6 +2,7 @@ package com.example.codelabs.baking.ui;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,11 +37,17 @@ public class IngredientFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ingredient, container, false);
-        mIngredientAdapter = new IngredientAdapter(mIngredientList);
+        if(getArguments() != null)
+        {
+            mIngredientList = getArguments().getParcelableArrayList("key");
+        }
         mIngredientRecyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_ingredient);
-        mIngredientRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mIngredientAdapter = new IngredientAdapter(mIngredientList);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext());
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mIngredientRecyclerView.setLayoutManager(mLinearLayoutManager);
         mIngredientRecyclerView.setAdapter(mIngredientAdapter);
-        mIngredientAdapter.notifyDataSetChanged();
+        //mIngredientAdapter.notifyDataSetChanged();
         Log.d("abcde",Integer.toString(mIngredientAdapter.getItemCount()));
         return rootView;
     }
@@ -52,6 +59,12 @@ public class IngredientFragment extends Fragment{
         {
             mIngredientList = getArguments().getParcelableArrayList("key");
         }
+    }
+
+    @Override
+    public void onSaveInstanceState( Bundle outState) {
+        outState.putParcelableArrayList("fraging", (ArrayList<Ingredient>) mIngredientList);
+        super.onSaveInstanceState(outState);
     }
 
 }

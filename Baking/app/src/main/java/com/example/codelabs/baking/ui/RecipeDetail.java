@@ -38,6 +38,7 @@ public class RecipeDetail extends AppCompatActivity implements StepAdapter.StepD
  List<Ingredient> mIngredientList = new ArrayList<>();
     private Intent mStepIntent;
     List<Step> mStepList;
+    List<Recipe> mRecipeList = new ArrayList<>();
     FrameLayout frameLayout;
 
     @Override
@@ -56,6 +57,7 @@ public class RecipeDetail extends AppCompatActivity implements StepAdapter.StepD
          frameLayout = (FrameLayout)findViewById(R.id.fragment_ingredient);
         mRecipeObject = mainIntent.getParcelableExtra(EXTRA_RECIPE_POSITION);
         mIngredientList = mRecipeObject.getmIngredients();
+        mRecipeList = mainIntent.getParcelableArrayListExtra("recipelist");
        bundle = new Bundle();
         bundle.putParcelableArrayList("key",(ArrayList<Ingredient>)mIngredientList);
 // set MyFragment Arguments
@@ -82,8 +84,8 @@ public class RecipeDetail extends AppCompatActivity implements StepAdapter.StepD
             loadFragment(i);
         }
         else {
-            fragmentTransaction.detach(i);
-            frameLayout.setVisibility(View.INVISIBLE);
+//            fragmentTransaction.detach(i);
+//            frameLayout.setVisibility(View.INVISIBLE);
             Toast.makeText(this, "else", Toast.LENGTH_SHORT);
         }
 

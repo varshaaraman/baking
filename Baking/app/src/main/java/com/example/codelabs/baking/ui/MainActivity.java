@@ -38,7 +38,7 @@ private RecipeAdapter mRecipeAdapter;
 private RecyclerView mRecipeRecyclerView;
     private String[] mBuiltUrl = new String[1] ;
     private Intent mRecipeIntent;
-    private static String mRawJson;
+    public static String mRawJson;
     long count = 0;
 
     @Override
@@ -175,6 +175,7 @@ private RecyclerView mRecipeRecyclerView;
     @Override
     public void onItemClick(int clickedItemIndex) {
         Recipe clickedRecipe = mRecipeList.get(clickedItemIndex);
+        //getmRawJson();
         //create an explicit intent to pass this to Moviedetail activity
         //Ingred
         for(int i=0;i<mRecipeList.size();i++)
@@ -191,6 +192,7 @@ private RecyclerView mRecipeRecyclerView;
     }
 
     public static String getmRawJson() {
+        Log.d("radhe",mRawJson);
         return mRawJson;
     }
 
