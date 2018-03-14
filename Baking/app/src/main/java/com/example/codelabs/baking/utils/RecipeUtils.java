@@ -1,18 +1,18 @@
 package com.example.codelabs.baking.utils;
 
-import android.content.ContentValues;
+import android.app.DownloadManager;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.example.codelabs.baking.data.RecipeContract;
-import com.example.codelabs.baking.data.RecipeDbHelper;
 import com.example.codelabs.baking.model.Ingredient;
 import com.example.codelabs.baking.model.Recipe;
 import com.example.codelabs.baking.model.Step;
-import com.example.codelabs.baking.ui.MainActivity;
+import com.example.codelabs.baking.ui.activity.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,15 +20,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-
-import static com.example.codelabs.baking.data.RecipeContract.RecipeEntry.TABLE_NAME;
 
 /**
  * Created by varshaa on 18-02-2018.
@@ -36,8 +31,7 @@ import static com.example.codelabs.baking.data.RecipeContract.RecipeEntry.TABLE_
 
 public class RecipeUtils {
     public final static String SOURCE_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
-
-
+    private final static String list_key = "widgetted_recipe";
 
     //Hits the appropriate endpoint and fetches the JSON data as string
     public static String getResponseFromHttpUrl(String urlString) throws IOException {
@@ -148,30 +142,25 @@ public class RecipeUtils {
 
         return mStepList;
     }
-//
-//    public void bulkLoad(Context dataContext,List<Recipe> recipeObjectList)
-//    {
-//        SQLiteDatabase mSqliteDatabase;
-//        RecipeDbHelper mRecipeDbHelper = new RecipeDbHelper(dataContext);
-//        mSqliteDatabase = mRecipeDbHelper.getWritableDatabase();
-//        mSqliteDatabase.beginTransaction();
-//        try{
-//            ContentValues contentValues = new ContentValues();
-//            for(Recipe recipe : recipeObjectList)
-//            {
-//                for(Ingredient ingredient : recipe.getmIngredients())
-//                {
-//                    contentValues.put(RecipeContract.RecipeEntry.COLUMN_RECIPE_ID,recipe.getmId());
-//                    contentValues.put(RecipeContract.RecipeEntry.COLUMN_RECIPE_NAME,recipe.getmRecipeName());
-//                    contentValues.put(RecipeContract.RecipeEntry.COLUMN_INGREDIENTS,ingredient.mIngredientName);
-//                    mSqliteDatabase.insert(TABLE_NAME,null,contentValues);
-//                }
-//            }
-//            mSqliteDatabase.setTransactionSuccessful();
-//        }
-//        finally {
-//            mSqliteDatabase.endTransaction();
-//        }
+    public static boolean isDownloadManagerAvailable(Context context) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            return true;
+        }
+        return false;
+    }
+
+    public static String getWidgettedRecipe(Context context)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(list_key,"Nutella Pie");
+    }
+
+
+
+
+
+
 //
 //
 //

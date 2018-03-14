@@ -1,0 +1,108 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    tools:context="com.example.android.android_me.ui.MainActivity">
+
+    <!--
+    This layout is a two-pane layout for the master/detail flow.
+    -->
+
+    <!-- The static MasterListFragment -->
+    <LinearLayout
+        android:id="@+id/master_list_fragment"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <!--Recycler View for displaying a grid of movies-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <ImageButton
+                        android:id="@+id/button_expand"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/btn_expand"
+                        android:onClick="click_expand"
+                        android:background="@drawable/circle"
+                        android:layout_margin="5dp"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:id="@+id/text_heading"
+                        android:layout_margin="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textStyle="bold"
+                        android:layout_toRightOf="@id/button_expand"
+                        android:text="Ingredients"
+                        />
+                    <LinearLayout
+                        android:id="@+id/fragment_ingredient_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/text_heading"
+                        android:layout_toRightOf="@id/button_expand"
+                        android:orientation="vertical"/>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_recipe_step"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/fragment_ingredient_container"/>
+                </RelativeLayout>
+            </android.support.design.widget.CoordinatorLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- A small divider -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/darker_gray" />
+
+    <!-- LinearLayout that arranges all three Android-Me body part images vertically -->
+    <LinearLayout
+        android:id="@+id/tablet_linear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <!-- Three vertically arranged body part fragments - the frame layouts are containers -
+        one for each Android-Me part (head, body, legs) -->
+
+        <FrameLayout
+            android:id="@+id/recipe_title_container"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerInside"/>
+
+        <FrameLayout
+            android:id="@+id/recipe_video_container"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerInside"/>
+
+        <FrameLayout
+            android:id="@+id/recipe_step_description_container"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerInside"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -3,8 +3,7 @@ package com.example.codelabs.baking;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.codelabs.baking.ui.MainActivity;
-import com.example.codelabs.baking.ui.RecipeDetail;
+import com.example.codelabs.baking.ui.activity.RecipeDetailActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,7 +24,7 @@ import static org.hamcrest.Matchers.anything;
 public class RecipeDetailActivityScreenTest {
     public static final String RECIPE_NAME = "";
     @Rule
-    public ActivityTestRule<RecipeDetail> mActivityTestRule = new ActivityTestRule<>(RecipeDetail.class);
+    public ActivityTestRule<RecipeDetailActivity> mActivityTestRule = new ActivityTestRule<>(RecipeDetailActivity.class);
 
     /**
      * Clicks on a GridView item and checks it opens up the OrderActivity with the correct details.

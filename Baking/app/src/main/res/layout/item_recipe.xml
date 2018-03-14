@@ -11,36 +11,62 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
         android:background="@color/pale_golden_rod"
-        android:elevation="2dp"
-        android:onClick="onPlantTypeClick"
+        android:elevation="100dp"
         android:orientation="horizontal"
-        android:layoutDirection="locale">
+        android:layoutDirection="locale"
+        android:padding = "5dp"
+        android:clickable="true"
+        android:id="@+id/list_row">
         <TextView
         android:id="@+id/text_recipe_label"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="center_vertical"
         android:background="@drawable/rating_circle"
+
         android:fontFamily="sans-serif-condensed"
         android:gravity="center"
+        android:layout_margin = "5dp"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="10sp"
         android:text="@{recipe.mRecipeFirstLetter}"
         tools:text="A"  />
-        <TextView
-            android:id="@+id/text_recipename"
-            android:layout_width="match_parent"
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{recipe.mRecipeName}"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textSize="25sp"
-            tools:text="Sample Recipe"/>
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_recipename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:textColor="#000000"
+                android:textSize="15dp"
+                tools:text="@string/sample_recipe"
+                android:text="@{recipe.mRecipeName}"/>
+
+                <TextView
+                    android:id="@+id/text_Servings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000066"
+                    android:textSize="10dp"
+                    tools:text="sample_servings"
+                    android:text="@{recipe.mServings}"/>
+
+
+        </LinearLayout>
+
     </LinearLayout>
 
   </layout>

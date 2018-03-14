@@ -8,14 +8,17 @@
             type="com.example.codelabs.baking.model.Step"/>
     </data>
     <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/pale_golden_rod">
 
         <TextView
             android:id="@+id/text_step_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@{step.mShortDescription}"/>
+            android:text="@{step.mShortDescription}"
+            android:textColor="@color/pale_golden_rod"
+            android:background="@color/dark_olive_green"/>
 
     </RelativeLayout>
 </layout>

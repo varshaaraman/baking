@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.example.codelabs.baking.StepDescriptionListActivity"
+    tools:context="com.example.codelabs.baking.ui.activity.StepDescriptionListActivity"
     tools:listitem="@layout/stepdescription_list_content" />

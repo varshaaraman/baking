@@ -3,6 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:animateLayoutChanges="true">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,30 +17,37 @@
             android:orientation="vertical">
             <ImageButton
                 android:id="@+id/button_expand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/rating_circle"
-                android:onClick="click_expand"/>
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/btn_expand"
+                android:onClick="click_expand"
+                android:background="@drawable/circle"
+                android:layout_margin="5dp"
+                android:layout_alignParentStart="true"/>
             <TextView
                 android:id="@+id/text_heading"
+                android:layout_margin="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold"
                 android:layout_toRightOf="@id/button_expand"
-                android:text="Ingredients"/>
-        <FrameLayout
-            android:id="@+id/fragment_ingredient"
+                android:text="Ingredients"
+                />
+        <LinearLayout
+            android:id="@+id/fragment_ingredient_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_heading"
-            android:layout_toRightOf="@id/button_expand">
-        </FrameLayout>
+            android:layout_toRightOf="@id/button_expand"
+            android:orientation="vertical"/>
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_recipe"
+                android:id="@+id/recycler_recipe_step"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/fragment_ingredient"/>
+                android:layout_below="@id/fragment_ingredient_container"/>
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
+    </ScrollView>
 </layout>
