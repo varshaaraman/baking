@@ -1,4 +1,4 @@
-package com.example.codelabs.baking;
+package com.example.codelabs.baking.ui.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.data.RecipeContract;
 import com.example.codelabs.baking.utils.RecipeUtils;
 

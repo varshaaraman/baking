@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -20,7 +19,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.data.RecipeContract;
@@ -49,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView mRecipeRecyclerView;
     private String[] mBuiltUrl = new String[1];
     private Intent mRecipeIntent;
+    SQLiteDatabase mSqliteDatabase;
+    RecipeDbHelper mRecipeDbHelper = new RecipeDbHelper(MainActivity.this);
+
 
 
     public static String getmRawJson() {
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(intent);
             }
         });
-        long count = bulkLoad(mRecipeList);
+        //long count = bulkLoad(mRecipeList);
         if (savedInstanceState != null) {
             mRecipeRecyclerView = (RecyclerView) findViewById(R.id.recycler_recipe);
             mRecipeRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns()));
@@ -133,8 +134,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public long getRowsCount() {
-        SQLiteDatabase mSqliteDatabase;
-        RecipeDbHelper mRecipeDbHelper = new RecipeDbHelper(MainActivity.this);
         mSqliteDatabase = mRecipeDbHelper.getWritableDatabase();
         long count = DatabaseUtils.queryNumEntries(mSqliteDatabase, TABLE_NAME);
         mSqliteDatabase.close();
@@ -144,14 +143,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public long bulkLoad(List<Recipe> recipeObjectList) {
 
 
-        SQLiteDatabase mSqliteDatabase;
         count = getRowsCount();
 
         if (count > 0) {
             deleteReceipes();
         }
 
-        RecipeDbHelper mRecipeDbHelper = new RecipeDbHelper(MainActivity.this);
         mSqliteDatabase = mRecipeDbHelper.getWritableDatabase();
 
         mSqliteDatabase.beginTransaction();
@@ -169,9 +166,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } finally {
 
             mSqliteDatabase.endTransaction();
-            return count;
+            mSqliteDatabase.close();
         }
-
+   return count;
 
     }
 
@@ -193,7 +190,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecipeAdapter.notifyDataSetChanged();
         long count = bulkLoad(mRecipeList);
         for (Recipe recipe : mRecipeList) {
-            SettingsActivity.mSettingsRecipeList.add(recipe.getmRecipeName());
+            if(!(SettingsActivity.mSettingsRecipeList.contains(recipe.getmRecipeName()))) {
+                SettingsActivity.mSettingsRecipeList.add(recipe.getmRecipeName());
+            }
         }
     }
 
@@ -217,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onItemClick(int clickedItemIndex) {
         clickedRecipe = mRecipeList.get(clickedItemIndex);
         mRecipeIntent = new Intent(MainActivity.this, RecipeDetailActivity.class);
-        mRecipeIntent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_POSITION, clickedRecipe);
+        mRecipeIntent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_POSITION_RECIPE_DETAIL_ACTIVITY, clickedRecipe);
         startActivity(mRecipeIntent);
     }
 
@@ -237,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecipeAdapter = new RecipeAdapter(this, mRecipeList, this);
         mRecipeRecyclerView.setAdapter(mRecipeAdapter);
         mRecipeAdapter.notifyDataSetChanged();
-        long count = bulkLoad(mRecipeList);
+        //long count = bulkLoad(mRecipeList);
     }
 
 }

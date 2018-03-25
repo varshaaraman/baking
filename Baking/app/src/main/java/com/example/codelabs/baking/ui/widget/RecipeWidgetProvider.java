@@ -1,13 +1,12 @@
-package com.example.codelabs.baking;
+package com.example.codelabs.baking.ui.widget;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
-import com.example.codelabs.baking.ui.activity.MainActivity;
+import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.utils.RecipeUtils;
 
 import timber.log.Timber;

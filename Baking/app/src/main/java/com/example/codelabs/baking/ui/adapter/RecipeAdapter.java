@@ -6,13 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.RadioButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.databinding.ItemRecipeBinding;
 import com.example.codelabs.baking.model.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +34,14 @@ public RecipeAdapter(Context mcontext, List<Recipe> mRecipeList, RecipeItemClick
 
 public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
      private ItemRecipeBinding mItemRecipeBinding;
-     TextView mRecipeNameTextView = (TextView)itemView.findViewById(R.id.text_recipename);
-     //RadioButton mWidgettedCheckBox = (RadioButton) itemView.findViewById(R.id.chk_iswidgetted);
+     ImageView mRecipePosterImageView = (ImageView)itemView.findViewById(R.id.iv_recipe_poster);
+     TextView mRecipeTextLabel = (TextView) itemView.findViewById(R.id.text_recipe_label);
      public RecipeViewHolder(ItemRecipeBinding binding) {
            super(binding.getRoot());
            mItemRecipeBinding = binding;
          itemView.setOnClickListener(this);
         // mWidgettedCheckBox.setOnClickListener(this);
+
         }
 
         public void bind(Recipe recipe) {
@@ -70,6 +71,18 @@ public RecipeAdapter.RecipeViewHolder onCreateViewHolder(ViewGroup parent, int v
 public void onBindViewHolder(RecipeAdapter.RecipeViewHolder holder, int position) {
         Recipe currentRecipe = mRecipeList.get(position);
         holder.bind(currentRecipe);
+        if(!currentRecipe.getmImage().isEmpty() )
+        {
+            holder.mRecipeTextLabel.setVisibility(View.GONE);
+            Picasso.with(mContext).load(currentRecipe.getmImage()).into(holder.mRecipePosterImageView);
+        }
+        else
+        {
+            holder.mRecipePosterImageView.setVisibility(View.GONE);
+            holder.mRecipeTextLabel.setVisibility(View.VISIBLE);
+            holder.mRecipeTextLabel.setText(currentRecipe.getmRecipeFirstLetter());
+
+        }
         }
 
 @Override

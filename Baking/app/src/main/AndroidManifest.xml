@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.codelabs.baking">
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,31 +12,52 @@
         <activity android:name=".ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.RecipeDetailActivity" />
-        <activity android:name=".ui.activity.StepDetailActivity" />
-        <activity android:name=".ui.activity.SettingsActivity" />
+        <activity
+            android:name=".ui.activity.RecipeDetailActivity"
+            android:label="Recipe Detail"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.example.codelabs.baking.ui.activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.codelabs.baking.ui.activity.MainActivity" />
+        </activity>
 
+        <activity
+            android:name=".ui.activity.StepDetailActivity"
+            android:label="Step Detail Activity"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.example.codelabs.baking.ui.activity.RecipeDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.codelabs.baking.ui.activity.RecipeDetailActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.activity.SettingsActivity"
+            android:label="Settings Activity"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.example.codelabs.baking.ui.activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.codelabs.baking.ui.activity.MainActivity" />
+        </activity>
         <provider
             android:name=".data.RecipeContentProvider"
             android:authorities="com.example.codelabs.baking"
             android:exported="true" />
-
-        <service android:name=".RecipeWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"></service>
-
-        <receiver android:name=".RecipeWidgetProvider">
+        <service
+            android:name=".ui.widget.RecipeWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <receiver android:name=".ui.widget.RecipeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/recipe_widget_provider_info" />
         </receiver>
     </application>
-
 </manifest>

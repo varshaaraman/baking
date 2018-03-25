@@ -12,10 +12,6 @@ import com.example.codelabs.baking.model.Ingredient;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by varshaa on 20-02-2018.
- */
-
 public class IngredientAdapter extends  RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
     //private Context mContext;
     private String mKey;
@@ -31,11 +27,10 @@ public class IngredientAdapter extends  RecyclerView.Adapter<IngredientAdapter.I
 
     public class IngredientViewHolder extends RecyclerView.ViewHolder {
         private ItemIngredientBinding mItemIngredientBinding;
-        //TextView mRecipeNameTextView = (TextView)itemView.findViewById(R.id.text_recipename);
         public IngredientViewHolder(ItemIngredientBinding binding) {
             super(binding.getRoot());
             mItemIngredientBinding = binding;
-            //itemView.setOnClickListener(this);
+
         }
 
         public void bind(Ingredient ingredient) {

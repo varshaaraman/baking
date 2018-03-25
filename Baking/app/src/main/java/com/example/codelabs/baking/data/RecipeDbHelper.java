@@ -5,11 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.example.codelabs.baking.data.RecipeContract.RecipeEntry.TABLE_NAME;
 //import static com.example.codelabs.baking.data.RecipeContract.RecipeEntry.TABLE_NAME;
 
-import com.example.codelabs.baking.data.RecipeContract.RecipeEntry.*;
 
 /**
  * Created by varshaa on 24-02-2018.
@@ -30,7 +28,6 @@ public class RecipeDbHelper extends SQLiteOpenHelper {
     /**
      * Constructs a new instance of {@link RecipeDbHelper}.
      *
-     * @param context of the app
      */
 
     private Context mContext;

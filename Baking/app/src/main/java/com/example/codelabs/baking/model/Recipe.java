@@ -3,11 +3,11 @@ package com.example.codelabs.baking.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.codelabs.baking.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by varshaa on 18-02-2018.
@@ -27,6 +27,7 @@ public class Recipe implements Parcelable {
     };
 
     public String mId;
+    public int mDefaultBackground;
     public String mRecipeName;
     public String mServings;
     public String mImage;
@@ -89,9 +90,15 @@ public class Recipe implements Parcelable {
         this.mRecipeName = mRecipeName;
         this.mServings = mServings;
         this.mImage = mImage;
-        this.mRecipeFirstLetter = String.valueOf(mRecipeName.charAt(0)).toUpperCase();
+        if(mImage.isEmpty()) {
+            this.mRecipeFirstLetter = String.valueOf(mRecipeName.charAt(0)).toUpperCase();
+        }
+        else {
+            this.mRecipeFirstLetter = null;
+        }
         this.mIngredients = mIngredients;
         this.mSteps = mSteps;
+        this.mDefaultBackground = R.drawable.rating_circle ;
         setmMaxId();
         setmMinId();
 
@@ -133,9 +140,9 @@ public class Recipe implements Parcelable {
         mServings = in.readString();
         mImage = in.readString();
         mRecipeFirstLetter = in.readString();
-        mIngredients = new ArrayList<Ingredient>();
+        mIngredients = new ArrayList<>();
         in.readList(mIngredients,Ingredient.class.getClassLoader());
-        mSteps = new ArrayList<Step>();
+        mSteps = new ArrayList<>();
         in.readList(mSteps,Step.class.getClassLoader());
         mMaxId = in.readString();
         mMinId = in.readString();

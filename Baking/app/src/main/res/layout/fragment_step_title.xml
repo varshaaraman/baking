@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <data>
+        <variable
+            name="stepdetail"
+            type="com.example.codelabs.baking.model.Step"/>
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id = "@+id/root"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        >
+        <TextView
+            android:id="@+id/text_step_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{stepdetail.mShortDescription}"
+            android:textColor="@color/dark_olive_green"
+            android:layout_marginBottom="@dimen/margin_10dp"
+            android:layout_marginLeft="@dimen/margin_10dp"
+            android:layout_marginRight="@dimen/margin_10dp"
+            android:layout_marginTop="@dimen/margin_10dp"
+            android:background="@color/pale_golden_rod"
+            android:textSize="@dimen/textsize_25sp"
+            android:elevation="@dimen/elevation_100dp"
+            android:gravity="center"
+            android:layoutDirection="locale"
+            android:padding = "@dimen/padding_25dp"
+            tools:text="@string/text_sample_step" />
+    </LinearLayout>
+</layout>

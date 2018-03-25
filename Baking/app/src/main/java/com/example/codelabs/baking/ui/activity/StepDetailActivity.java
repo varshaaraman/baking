@@ -1,45 +1,29 @@
-
 package com.example.codelabs.baking.ui.activity;
 
-import android.app.DownloadManager;
-import android.app.NotificationManager;
-
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.os.Bundle;
 
 import com.example.codelabs.baking.R;
 //import com.example.codelabs.baking.databinding.ActivityStepDetailBinding;
-import com.example.codelabs.baking.ui.adapter.RecipeAdapter;
 import com.example.codelabs.baking.ui.fragment.StepDetailFragment;
 import com.example.codelabs.baking.model.Recipe;
 import com.example.codelabs.baking.model.Step;
 import com.example.codelabs.baking.ui.fragment.VideoPlayerFragment;
+import com.example.codelabs.baking.utils.RecipeUtils;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import timber.log.Timber;
-
-public class StepDetailActivity extends FragmentActivity implements  StepDetailFragment.TextClicked {
+public class StepDetailActivity extends AppCompatActivity implements  StepDetailFragment.TextClicked {
     public static final String EXTRA_STEP_POSITION = "stepclickedPosition";
     public static final String EXTRA_RECIPE_ID = "clickedrecipeid";
     public static final String KEY_VIDEO_PLAYER_FRAGMENT = "keyvideoplayerfragment";
@@ -52,19 +36,21 @@ public class StepDetailActivity extends FragmentActivity implements  StepDetailF
     //ActivityStepDetailBinding mActivityStepDetailBinding;
     ImageButton mPreviousButton;
     ImageButton mNextButton;
-    int currentId,previousId,nextId = 0;
+    int currentId, previousId, nextId = 0;
     VideoPlayerFragment videoPlayerfragment;
     StepDetailFragment stepDetailFragment;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            if (this.getResources().getBoolean(R.bool.isTablet) && !RecipeUtils.isLandscape(this)) {
+                this.finish();
+            }
 
 
-
-
-
-    String videoUri;
-    boolean previousVisiblity, nextVisiblity = true;
-
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
 
     @Override
@@ -72,173 +58,184 @@ public class StepDetailActivity extends FragmentActivity implements  StepDetailF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_detail);
         Intent stepIntent = getIntent();
-        String msg;
-        fm = (FrameLayout) findViewById(R.id.frame_description);
         mStepObject = stepIntent.getParcelableExtra(EXTRA_STEP_POSITION);
         mClickedRecipe = stepIntent.getParcelableExtra(EXTRA_RECIPE_ID);
-        int k = getResources().getConfiguration().orientation;
-        switch (k)
-        {
-            case Configuration.ORIENTATION_LANDSCAPE :
-                msg = "landscape";
-                break;
-            case Configuration.ORIENTATION_PORTRAIT :
-                msg = "portrait";
-                break;
-            default:
-                msg="therlayee";
+        getSupportActionBar().setTitle(mClickedRecipe.getmRecipeName());
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        if (this.getResources().getBoolean(R.bool.isTablet) && RecipeUtils.isLandscape(this)) {
+            finish();
         }
 
-        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
-
-        if (savedInstanceState != null) {
-            Toast.makeText(this,"SIS",Toast.LENGTH_SHORT).show();
-            fragmentManager = getSupportFragmentManager();
-            fragmentTransaction = fragmentManager.beginTransaction();
-            videoPlayerfragment = (VideoPlayerFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT);
-            //videoPlayerfragment.setmStepObject(mStepObject);
-            stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT);
-            //stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
-            //stepDetailFragment.setStepObject(mStepObject);
-            if (!isLandscape()) {
-                fm = (FrameLayout) findViewById(R.id.frame_description);
-                if(!(fm == null))
-                {
-                    fm.setVisibility(View.VISIBLE);
-                }
-                fragmentTransaction.add(R.id.frame_media_playerView, videoPlayerfragment);
-                fragmentTransaction.add(R.id.frame_description, stepDetailFragment);
+        if (savedInstanceState == null) {
+            videoPlayerfragment = new VideoPlayerFragment();
+            videoPlayerfragment.setmStepObject(mStepObject);
+            videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
+            stepDetailFragment = new StepDetailFragment();
+            stepDetailFragment.setStepObject(mStepObject);
+            stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
+            if (!(RecipeUtils.isLandscape(StepDetailActivity.this))) {
+                fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment,"video_player_fragment");
+                fragmentTransaction.replace(R.id.frame_description, stepDetailFragment,"step_detail_fragment");
 
             }
             else
             {
-                fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment);
-
+//                mStepObject = savedInstanceState.getParcelable(EXTRA_STEP_POSITION);
+//                mClickedRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE_ID);
+                fragmentTransaction.hide(stepDetailFragment);
+                fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment,"video_player_fragment");
             }
-            fragmentTransaction.commit();
+
+
         } else {
-            videoPlayerfragment = new VideoPlayerFragment();
-            videoPlayerfragment.setmStepObject(mStepObject);
-            stepDetailFragment = new StepDetailFragment();
-            stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
-            stepDetailFragment.setStepObject(mStepObject);
-            fragmentManager = getSupportFragmentManager();
-            fragmentTransaction = fragmentManager.beginTransaction();
-            if (!isLandscape()) {
-               fm = (FrameLayout) findViewById(R.id.frame_description);
-               if(!(fm == null))
-                   fm.setVisibility(View.VISIBLE);
-               fragmentTransaction.add(R.id.frame_media_playerView, videoPlayerfragment);
-               fragmentTransaction.add(R.id.frame_description, stepDetailFragment);
 
-
-           }
-           else
-            {
-                fragmentTransaction.add(R.id.frame_media_playerView, videoPlayerfragment);
+            mStepObject = savedInstanceState.getParcelable(EXTRA_STEP_POSITION);
+            mClickedRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE_ID);
+            if (getSupportFragmentManager().findFragmentByTag("video_player_fragment") != null) {
+                videoPlayerfragment = (VideoPlayerFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT);
             }
-            fragmentTransaction.commit();
+            else
+            {
+                videoPlayerfragment = new VideoPlayerFragment();
+                videoPlayerfragment.setmStepObject(mStepObject);
+                videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
+            }
+
+            if (getSupportFragmentManager().findFragmentByTag("step_detail_fragment") != null) {
+                stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT);
+
+            } else {
+                stepDetailFragment = new StepDetailFragment();
+                stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
+                stepDetailFragment.setStepObject(mStepObject);
+//
+            }
+            if (!(RecipeUtils.isLandscape(StepDetailActivity.this))) {
+                fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment);
+                fragmentTransaction.replace(R.id.frame_description, stepDetailFragment);
+            }
+            else
+            {
+                fragmentTransaction.hide(stepDetailFragment);
+                fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment);
+                //clearBackStack();
+            }
         }
+        fragmentTransaction.commit();
+        //clearBackStack();
     }
+
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(videoPlayerfragment.isAdded())
-            getSupportFragmentManager().putFragment(outState,KEY_VIDEO_PLAYER_FRAGMENT,videoPlayerfragment);
-        if(stepDetailFragment.isAdded())
-            getSupportFragmentManager().putFragment(outState,KEY_STEP_DETAIL_FRAGMENT,stepDetailFragment);
+        if (videoPlayerfragment.isAdded())
+            getSupportFragmentManager().putFragment(outState, KEY_VIDEO_PLAYER_FRAGMENT, videoPlayerfragment);
+        if (stepDetailFragment.isAdded())
+            getSupportFragmentManager().putFragment(outState, KEY_STEP_DETAIL_FRAGMENT, stepDetailFragment);
+        outState.putParcelable(EXTRA_STEP_POSITION, mStepObject);
+        outState.putParcelable(EXTRA_RECIPE_ID, mClickedRecipe);
 
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Toast.makeText(this,"RIS",Toast.LENGTH_SHORT).show();
         super.onRestoreInstanceState(savedInstanceState);
-        fragmentTransaction = fragmentManager.beginTransaction();
-//        videoPlayerfragment = (VideoPlayerFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT);
-//        if (!isLandscape()) {
-//            fm = (FrameLayout) findViewById(R.id.frame_description);
-//            if(!(fm == null))
-//                fm.setVisibility(View.VISIBLE);
-//            stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT);
-//        }
-//        else
-//        {
-//            fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment).commit();
-//        }
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        videoPlayerfragment = (VideoPlayerFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT);
-        videoPlayerfragment.setmStepObject(mStepObject);
-        if (isLandscape()) {
-            Toast.makeText(this,"amaa vangaDAA",Toast.LENGTH_SHORT).show();
-            fm = (FrameLayout) findViewById(R.id.frame_description);
-            if(!(fm == null))
-            {
-                fm.setVisibility(View.VISIBLE);
-                stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT);
-                stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
-                stepDetailFragment.setStepObject(mStepObject);
-            }
+        mStepObject = savedInstanceState.getParcelable(EXTRA_STEP_POSITION);
+        mClickedRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE_ID);
+        if (getSupportFragmentManager().findFragmentByTag("video_player_fragment") != null) {
+            videoPlayerfragment = (VideoPlayerFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT);
+            videoPlayerfragment.setmStepObject(mStepObject);
+            videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
+        }
+        else
+        {
+            videoPlayerfragment = new VideoPlayerFragment();
+            videoPlayerfragment.setmStepObject(mStepObject);
+            videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
+        }
+
+        if (getSupportFragmentManager().findFragmentByTag("step_detail_fragment") != null) {
+            stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT);
+            stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
+            stepDetailFragment.setStepObject(mStepObject);
+
+        } else {
+            stepDetailFragment = new StepDetailFragment();
+            stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
+            stepDetailFragment.setStepObject(mStepObject);
+
+        }
+        if (!(RecipeUtils.isLandscape(StepDetailActivity.this))) {
+            videoPlayerfragment = new VideoPlayerFragment();
+            videoPlayerfragment.setmStepObject(mStepObject);
+            videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
             fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment);
             fragmentTransaction.replace(R.id.frame_description, stepDetailFragment);
-
         }
         else
         {
-            Toast.makeText(this,"illaa pongaDAA",Toast.LENGTH_SHORT).show();
-            if(videoPlayerfragment.isAdded())
-            {
-                fragmentTransaction.remove(videoPlayerfragment);
-            }
-            fm = (FrameLayout) findViewById(R.id.frame_description);
-
-            fragmentTransaction.add(R.id.frame_media_playerView, videoPlayerfragment);
-            if(!(fm == null))
-            {
-                fm.setVisibility(View.INVISIBLE);
-            }
-            else
-            {
-                Toast.makeText(this,"illaa pongaDAA",Toast.LENGTH_SHORT).show();
-            }
-
+            fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment);
+            fragmentTransaction.remove(stepDetailFragment);
+            //clearBackStack();
         }
+
         fragmentTransaction.commit();
-
-    }
-    public boolean  isLandscape()
-    {
-        if(findViewById(R.id.root_land) != null) {
-          return true;
-        }
-        else
-        {
-            return false;
-        }
+        //clearBackStack();
     }
 
     @Override
-    public void sendText(Step mStepooo) {
-
-        videoPlayerfragment.trigger(mStepooo.getmVideoUrl());
-        //Toast.makeText(this,"maintoast" + mStepooo.getmVideoUrl(),Toast.LENGTH_SHORT);
+    public void sendVideoUrl(Step mStep) {
+        videoPlayerfragment.trigger(mStep.getmVideoUrl());
 
     }
+
+
+    @Override
+    public void onBackPressed() {
+        super.finish();
+
+        int fragments = getSupportFragmentManager().getBackStackEntryCount();
+        if (fragments == 1) {
+            finish();
+        } else {
+            if (getFragmentManager().getBackStackEntryCount() > 1) {
+                getFragmentManager().popBackStack();
+            } else {
+                super.onBackPressed();
+            }
+        }
+        if (this.getResources().getBoolean(R.bool.isTablet) && !RecipeUtils.isLandscape(this)) {
+
+            if (findViewById(R.id.frame_description) != null) {
+
+                clearBackStack();
+                ((ViewGroup) findViewById(R.id.frame_description).getParent()).setVisibility(View.GONE);
+                ((ViewGroup) findViewById(R.id.frame_description).getParent()).removeAllViews();
+                this.finish();
+
+            }
+
+
+        }
+
+    }
+
+    private void clearBackStack() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
+
+
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

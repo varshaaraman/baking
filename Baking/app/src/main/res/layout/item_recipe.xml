@@ -7,6 +7,7 @@
         <variable
             name="recipe"
             type="com.example.codelabs.baking.model.Recipe"/>
+        <import type="android.view.View"/>
     </data>
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +29,7 @@
         android:layout_height="20dp"
         android:layout_gravity="center_vertical"
         android:background="@drawable/rating_circle"
-
+        android:visibility="@{recipe.mRecipeFirstLetter == null ? View.GONE : View.VISIBLE}"
         android:fontFamily="sans-serif-condensed"
         android:gravity="center"
         android:layout_margin = "5dp"
@@ -36,12 +37,21 @@
         android:textSize="10sp"
         android:text="@{recipe.mRecipeFirstLetter}"
         tools:text="A"  />
+        <ImageView
+            android:id="@+id/iv_recipe_poster"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:contentDescription="@string/content_description_recipe_poster"
+            android:visibility="@{recipe.mImage == null ? View.GONE : View.VISIBLE}"/>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -51,16 +61,17 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:textColor="#000000"
-                android:textSize="15dp"
+                android:textSize="@dimen/textsize_15sp"
                 tools:text="@string/sample_recipe"
                 android:text="@{recipe.mRecipeName}"/>
+
 
                 <TextView
                     android:id="@+id/text_Servings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#000066"
-                    android:textSize="10dp"
+                    android:textSize="@dimen/textsize_10sp"
                     tools:text="sample_servings"
                     android:text="@{recipe.mServings}"/>
 

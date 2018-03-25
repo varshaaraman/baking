@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     android:animateLayoutChanges="true">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
         <!--Recycler View for displaying a grid of movies-->
         <RelativeLayout
@@ -24,7 +22,8 @@
                 android:onClick="click_expand"
                 android:background="@drawable/circle"
                 android:layout_margin="5dp"
-                android:layout_alignParentStart="true"/>
+                android:layout_alignParentStart="true"
+                android:contentDescription="@string/Content_description_button_expand"/>
             <TextView
                 android:id="@+id/text_heading"
                 android:layout_margin="5dp"
@@ -32,15 +31,15 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold"
-                android:layout_toRightOf="@id/button_expand"
-                android:text="Ingredients"
+                android:layout_toEndOf="@id/button_expand"
+                android:text="@string/ingredients"
                 />
         <LinearLayout
             android:id="@+id/fragment_ingredient_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_heading"
-            android:layout_toRightOf="@id/button_expand"
+            android:layout_toEndOf="@id/button_expand"
             android:orientation="vertical"/>
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_recipe_step"

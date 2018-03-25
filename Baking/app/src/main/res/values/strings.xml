@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">Baking</string>
     <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="title_stepdescription_list">StepDescriptions</string>
-    <string name="title_stepdescription_detail">StepDescription Detail</string>
     <string name="sample_recipe">Sample Recipe</string>
+    <string name="Content_description_button_expand">Expand button</string>
+    <string name="content_description_back_button">back button</string>
+    <string name="content_description_forward_button">forward button</string>
+    <string name="content_description_video_not_found">video not found</string>
+    <string name="content_description_recipe_poster">recipe poster</string>
+    <string name="text_sample_step">sample step</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="widget_title">title</string>
 </resources>

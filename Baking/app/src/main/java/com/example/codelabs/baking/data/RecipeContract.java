@@ -16,7 +16,6 @@ public class RecipeContract {
     public static final class RecipeEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_RECIPES).build();
-        ;
         public final static String TABLE_NAME = "recipes";
         public final static String _ID = BaseColumns._ID;
         public final static String COLUMN_RECIPE_ID = "recipe_id";

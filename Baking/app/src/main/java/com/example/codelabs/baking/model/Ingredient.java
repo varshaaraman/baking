@@ -3,9 +3,6 @@ package com.example.codelabs.baking.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by varshaa on 19-02-2018.
- */
 
 public class Ingredient implements Parcelable {
     public static final Parcelable.Creator CREATOR
