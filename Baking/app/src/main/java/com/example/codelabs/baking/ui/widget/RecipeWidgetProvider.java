@@ -9,8 +9,6 @@ import android.widget.RemoteViews;
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.utils.RecipeUtils;
 
-import timber.log.Timber;
-
 /**
  * Implementation of App Widget functionality.
  */
@@ -22,12 +20,11 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.collection_widget);
         Intent intent = new Intent(context, RecipeWidgetService.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intent,0);
-//        views.setOnClickPendingIntent(R.id.appwidget_image,pendingIntent);
-        views.setRemoteAdapter(R.id.widgetListView,intent);
+
+        views.setRemoteAdapter(R.id.widgetListView, intent);
         views.setTextViewText(R.id.widgetTitleLabel, RecipeUtils.getWidgettedRecipe(context));
 
-        // Instruct the widget manager to update the widget
+
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -41,13 +38,12 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-        Timber.d("Krisnaa");
+
     }
 
     @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
+
     }
 }
 

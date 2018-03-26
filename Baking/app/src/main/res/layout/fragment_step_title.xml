@@ -23,16 +23,16 @@
             android:layout_height="wrap_content"
             android:text="@{stepdetail.mShortDescription}"
             android:textColor="@color/dark_olive_green"
-            android:layout_marginBottom="@dimen/margin_10dp"
-            android:layout_marginLeft="@dimen/margin_10dp"
-            android:layout_marginRight="@dimen/margin_10dp"
-            android:layout_marginTop="@dimen/margin_10dp"
+            android:layout_marginBottom="@dimen/size_10dp"
+            android:layout_marginLeft="@dimen/size_10dp"
+            android:layout_marginRight="@dimen/size_10dp"
+            android:layout_marginTop="@dimen/size_10dp"
             android:background="@color/pale_golden_rod"
             android:textSize="@dimen/textsize_25sp"
             android:elevation="@dimen/elevation_100dp"
             android:gravity="center"
             android:layoutDirection="locale"
-            android:padding = "@dimen/padding_25dp"
+            android:padding = "@dimen/size_25dp"
             tools:text="@string/text_sample_step" />
     </LinearLayout>
 </layout>

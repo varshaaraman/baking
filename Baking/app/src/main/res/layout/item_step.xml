@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+
     <data>
+
         <variable
             name="step"
-            type="com.example.codelabs.baking.model.Step"/>
+            type="com.example.codelabs.baking.model.Step" />
     </data>
-    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/pale_golden_rod">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pale_golden_rod"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_step_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:background="@color/dark_olive_green"
             android:text="@{step.mShortDescription}"
-            android:textColor="@color/pale_golden_rod"
-            android:background="@color/dark_olive_green"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/pale_golden_rod" />
 
     </RelativeLayout>
 </layout>

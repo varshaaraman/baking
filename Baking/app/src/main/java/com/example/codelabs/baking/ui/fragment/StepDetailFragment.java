@@ -3,25 +3,25 @@ package com.example.codelabs.baking.ui.fragment;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.codelabs.baking.R;
-//import com.example.codelabs.baking.databinding.ActivityStepDetailBinding;
-import com.example.codelabs.baking.databinding.FrameStepdescriptionBinding;
+import com.example.codelabs.baking.databinding.FragmentStepDescriptionBinding;
 import com.example.codelabs.baking.model.Recipe;
 import com.example.codelabs.baking.model.Step;
-//import com.google.android.exoplayer2.trackselection.AdaptiveVideoTrackSelection;
 
 import java.util.List;
 import java.util.Objects;
 
-import android.widget.ImageButton;
-import android.widget.TextView;
+//import com.example.codelabs.baking.databinding.ActivityStepDetailBinding;
+//import com.google.android.exoplayer2.trackselection.AdaptiveVideoTrackSelection;
 
 public class StepDetailFragment extends Fragment implements View.OnClickListener {
     public static final String EXTRA_STEP_POSITION = "stepclickedPosition";
@@ -31,16 +31,17 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
     private Step mStepObject;
     TextClicked mCallback;
     private Recipe mClickedRecipe;
-    FrameStepdescriptionBinding mFragmentStepDescriptionBinding;
+    FragmentStepDescriptionBinding mFragmentStepDescriptionBinding;
     ImageButton mPreviousButton;
     ImageButton mNextButton;
     int currentId, previousId, nextId = 0;
     TextView mDescription;
     String videoUri;
+    String mDes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.frame_stepdescription, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_step_description, container, false);
         mPreviousButton = (ImageButton) rootView.findViewById(R.id.button_previous_step);
         mPreviousButton.setOnClickListener(this);
         mNextButton = (ImageButton) rootView.findViewById(R.id.button_next_step);
@@ -49,15 +50,28 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
         mNextButton.setOnClickListener(this);
         if (savedInstanceState != null) {
 
+            mDes = savedInstanceState.getString("MDES");
             mStepObject = savedInstanceState.getParcelable(KEY_STEP_DESCRIPTION);
             mClickedRecipe = savedInstanceState.getParcelable(KEY_CLICKED_RECIPE);
-            mFragmentStepDescriptionBinding = DataBindingUtil.setContentView(getActivity(), R.layout.frame_stepdescription);
+            mFragmentStepDescriptionBinding = DataBindingUtil.setContentView(getActivity(), R.layout.fragment_step_description);
 
         }
-        //swapPositions(Integer.parseInt(mStepObject.getmId()),previousId,nextId);
-        //videoUri = mStepObject.getmVideoUrl();
-        mDescription.setText(mStepObject.getmDescription());
-        currentId = Integer.parseInt(mStepObject.getmId());
+        if (mStepObject != null)
+
+        {
+            currentId = Integer.parseInt(mStepObject.getmId());
+        }
+        if (mDes != null)
+            mDescription.setText(mDes);
+        else {
+            if (mStepObject != null)
+                mDescription.setText(mStepObject.getmDescription());
+            else
+                mDescription.setText("");
+
+        }
+
+
         if (currentId < 0) {
             previousId = Integer.parseInt(mClickedRecipe.getmMaxId());
 
@@ -70,7 +84,6 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
         } else {
             nextId = currentId + 1;
         }
-        //playerView = mActivityStepDetailBinding.mediaPlayerView;
 
 
         return rootView;
@@ -95,7 +108,10 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
 
                 {
                     mCallback.sendVideoUrl(mStep.get(i));
+                    //mCallback.sendDescription(mStep.get(i));
                     mDescription.setText(mStep.get(i).getmDescription());
+                    mDes = mStep.get(i).getmDescription();
+
 
                     break;
 
@@ -108,8 +124,13 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
 
     public interface TextClicked {
         void sendVideoUrl(Step mStepooo);
+
+        void sendDescription(Step mStepObject);
     }
 
+    public void setDescription(String description) {
+        mDescription.setText(description);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -167,6 +188,7 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_STEP_DESCRIPTION, mStepObject);
         outState.putParcelable(KEY_CLICKED_RECIPE, mClickedRecipe);
+        outState.putString("MDES", mDes);
     }
 
 

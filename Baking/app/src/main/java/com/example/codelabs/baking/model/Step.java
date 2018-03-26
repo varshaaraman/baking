@@ -35,6 +35,17 @@ public class Step implements Parcelable {
         this.mThumbNailUrl = mThumbNailUrl;
     }
 
+    // De-parcel object
+    public Step(Parcel in) {
+        mId = in.readString();
+        mShortDescription = in.readString();
+        mDescription = in.readString();
+        mVideoUrl = in.readString();
+        mThumbNailUrl = in.readString();
+
+
+    }
+
     public String getmId() {
         return mId;
     }
@@ -57,18 +68,6 @@ public class Step implements Parcelable {
 
     public int describeContents() {
         return 0;
-    }
-
-    // De-parcel object
-    public Step(Parcel in) {
-       mId = in.readString();
-       mShortDescription = in.readString();
-       mDescription = in.readString();
-       mVideoUrl = in.readString();
-       mThumbNailUrl = in.readString();
-
-
-
     }
 
     @Override

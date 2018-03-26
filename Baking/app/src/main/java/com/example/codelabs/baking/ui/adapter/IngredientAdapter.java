@@ -12,35 +12,15 @@ import com.example.codelabs.baking.model.Ingredient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IngredientAdapter extends  RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
-    //private Context mContext;
-    private String mKey;
+public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
     private List<Ingredient> mIngredientList = new ArrayList<>();
 
 
-    public IngredientAdapter( List<Ingredient> mIngredientList) {
-        //this.mContext = mcontext;
+    public IngredientAdapter(List<Ingredient> mIngredientList) {
         this.mIngredientList = mIngredientList;
 
 
     }
-
-    public class IngredientViewHolder extends RecyclerView.ViewHolder {
-        private ItemIngredientBinding mItemIngredientBinding;
-        public IngredientViewHolder(ItemIngredientBinding binding) {
-            super(binding.getRoot());
-            mItemIngredientBinding = binding;
-
-        }
-
-        public void bind(Ingredient ingredient) {
-            mItemIngredientBinding.setIngredient(ingredient);
-            mItemIngredientBinding.executePendingBindings();
-        }
-
-    }
-
-
 
     @Override
     public IngredientAdapter.IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,6 +28,7 @@ public class IngredientAdapter extends  RecyclerView.Adapter<IngredientAdapter.I
         ItemIngredientBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_ingredient, parent, false);
         return new IngredientAdapter.IngredientViewHolder(binding);
     }
+
     @Override
     public void onBindViewHolder(IngredientAdapter.IngredientViewHolder holder, int position) {
         Ingredient currentIngredient = mIngredientList.get(position);
@@ -62,6 +43,21 @@ public class IngredientAdapter extends  RecyclerView.Adapter<IngredientAdapter.I
             return 0;
     }
 
+    public class IngredientViewHolder extends RecyclerView.ViewHolder {
+        private ItemIngredientBinding mItemIngredientBinding;
+
+        public IngredientViewHolder(ItemIngredientBinding binding) {
+            super(binding.getRoot());
+            mItemIngredientBinding = binding;
+
+        }
+
+        public void bind(Ingredient ingredient) {
+            mItemIngredientBinding.setIngredient(ingredient);
+            mItemIngredientBinding.executePendingBindings();
+        }
+
+    }
 
 
 }

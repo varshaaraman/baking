@@ -32,9 +32,6 @@ public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
             mCursor.close();
         }
         final long identityToken = Binder.clearCallingIdentity();
-        /**This is done because the widget runs as a separate thread
-         when compared to the current app and hence the app's data won't be accessible to it
-         because I'm using a content provided **/
         Uri recipeUri = RecipeContract.RecipeEntry.CONTENT_URI;
         String[] selectionColumns = new String[]{RecipeContract.RecipeEntry.COLUMN_INGREDIENTS};
         String[] selectionArgs = new String[]{RecipeUtils.getWidgettedRecipe(mContext)};

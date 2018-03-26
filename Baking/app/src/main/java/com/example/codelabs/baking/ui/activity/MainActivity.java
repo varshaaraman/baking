@@ -42,15 +42,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     long count = 0;
     boolean checked;
     Recipe clickedRecipe;
+    SQLiteDatabase mSqliteDatabase;
+    RecipeDbHelper mRecipeDbHelper = new RecipeDbHelper(MainActivity.this);
     private List<Recipe> mRecipeList = new ArrayList<>();
     private RecipeAdapter mRecipeAdapter;
     private RecyclerView mRecipeRecyclerView;
     private String[] mBuiltUrl = new String[1];
     private Intent mRecipeIntent;
-    SQLiteDatabase mSqliteDatabase;
-    RecipeDbHelper mRecipeDbHelper = new RecipeDbHelper(MainActivity.this);
-
-
 
     public static String getmRawJson() {
         return mRawJson;
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(intent);
             }
         });
-        //long count = bulkLoad(mRecipeList);
+
         if (savedInstanceState != null) {
             mRecipeRecyclerView = (RecyclerView) findViewById(R.id.recycler_recipe);
             mRecipeRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns()));
@@ -168,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mSqliteDatabase.endTransaction();
             mSqliteDatabase.close();
         }
-   return count;
+        return count;
 
     }
 
@@ -190,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecipeAdapter.notifyDataSetChanged();
         long count = bulkLoad(mRecipeList);
         for (Recipe recipe : mRecipeList) {
-            if(!(SettingsActivity.mSettingsRecipeList.contains(recipe.getmRecipeName()))) {
+            if (!(SettingsActivity.mSettingsRecipeList.contains(recipe.getmRecipeName()))) {
                 SettingsActivity.mSettingsRecipeList.add(recipe.getmRecipeName());
             }
         }
@@ -199,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private int numberOfColumns() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        // You can change this divider to adjust the size of the poster
         int widthDivider = 500;
         int width = displayMetrics.widthPixels;
         int nColumns = width / widthDivider;
@@ -236,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecipeAdapter = new RecipeAdapter(this, mRecipeList, this);
         mRecipeRecyclerView.setAdapter(mRecipeAdapter);
         mRecipeAdapter.notifyDataSetChanged();
-        //long count = bulkLoad(mRecipeList);
+
     }
 
 }

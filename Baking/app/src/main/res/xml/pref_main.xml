@@ -6,7 +6,7 @@
 
     <ListPreference
         android:key="widgetted_recipe"
-        android:summary="List preference example"
+        android:summary=""
         android:title="List preference" />
     </PreferenceCategory>
 </PreferenceScreen>

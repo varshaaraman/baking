@@ -27,6 +27,16 @@ public class Ingredient implements Parcelable {
         this.mFormattedQuantity = mQuantity.concat(mMeasure);
     }
 
+    // De-parcel object
+    public Ingredient(Parcel in) {
+        mQuantity = in.readString();
+        mMeasure = in.readString();
+        mIngredientName = in.readString();
+        mFormattedQuantity = in.readString();
+
+
+    }
+
     public String getmQuantity() {
         return mQuantity;
     }
@@ -41,16 +51,6 @@ public class Ingredient implements Parcelable {
 
     public int describeContents() {
         return 0;
-    }
-
-    // De-parcel object
-    public Ingredient(Parcel in) {
-        mQuantity = in.readString();
-        mMeasure = in.readString();
-        mIngredientName = in.readString();
-        mFormattedQuantity = in.readString();
-
-
     }
 
     @Override

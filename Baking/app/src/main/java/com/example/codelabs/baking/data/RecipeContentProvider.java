@@ -12,9 +12,6 @@ import android.support.annotation.NonNull;
 
 import static com.example.codelabs.baking.data.RecipeContract.RecipeEntry.TABLE_NAME;
 
-/**
- * Created by varshaa on 24-02-2018.
- */
 
 public class RecipeContentProvider extends ContentProvider {
 
@@ -156,7 +153,7 @@ public class RecipeContentProvider extends ContentProvider {
         int moviesDeleted; // starts as 0
 
         // Write the code to delete a single row of data
-        // [Hint] Use selections to delete an item by its row ID
+
         switch (match) {
             // Handle the single item case, recognized by the ID included in the URI path
             case RECIPES:

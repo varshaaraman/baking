@@ -11,7 +11,9 @@ public class RecipeContract {
     public static final String CONTENT_AUTHORITY = "com.example.codelabs.baking";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_RECIPES = "recipes";
-    private RecipeContract() {}
+
+    private RecipeContract() {
+    }
 
     public static final class RecipeEntry implements BaseColumns {
 
@@ -21,9 +23,6 @@ public class RecipeContract {
         public final static String COLUMN_RECIPE_ID = "recipe_id";
         public final static String COLUMN_RECIPE_NAME = "recipe_name";
         public final static String COLUMN_INGREDIENTS = "ingrdients";
-        //public static final  COLUMN_POSTER = ;
-//        public final static String COLUMN_RATING="rating";
-//        public final static String COLUMN_OVERVIEW="overview";
-//        public final static String COLUMN_POSTER="poster";
+
     }
 }

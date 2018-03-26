@@ -21,6 +21,7 @@ public class Recipe implements Parcelable {
         public Recipe createFromParcel(Parcel in) {
             return new Recipe(in);
         }
+
         public Recipe[] newArray(int size) {
             return new Recipe[size];
         }
@@ -36,7 +37,41 @@ public class Recipe implements Parcelable {
     public List<Step> mSteps = new ArrayList<>();
     public String mRecipeMaxId;
     public String mRecipeMinId;
+    public String mMaxId;
+    public String mMinId;
 
+
+    public Recipe(String mId, String mRecipeName, String mServings, String mImage, List<Ingredient> mIngredients, List<Step> mSteps) {
+        this.mId = mId;
+        this.mRecipeName = mRecipeName;
+        this.mServings = mServings;
+        this.mImage = mImage;
+        if (mImage.isEmpty()) {
+            this.mRecipeFirstLetter = String.valueOf(mRecipeName.charAt(0)).toUpperCase();
+        } else {
+            this.mRecipeFirstLetter = null;
+        }
+        this.mIngredients = mIngredients;
+        this.mSteps = mSteps;
+        this.mDefaultBackground = R.drawable.rating_circle;
+        setmMaxId();
+        setmMinId();
+
+    }
+    // De-parcel object
+    public Recipe(Parcel in) {
+        mId = in.readString();
+        mRecipeName = in.readString();
+        mServings = in.readString();
+        mImage = in.readString();
+        mRecipeFirstLetter = in.readString();
+        mIngredients = new ArrayList<>();
+        in.readList(mIngredients, Ingredient.class.getClassLoader());
+        mSteps = new ArrayList<>();
+        in.readList(mSteps, Step.class.getClassLoader());
+        mMaxId = in.readString();
+        mMinId = in.readString();
+    }
 
     public String getmMaxId() {
         return mMaxId;
@@ -46,67 +81,36 @@ public class Recipe implements Parcelable {
         return mMinId;
     }
 
-
-    public String mMaxId;
-    public String mMinId;
-
     public void setmMaxId() {
-        List<Integer>  tempList = new ArrayList<>();
+        List<Integer> tempList = new ArrayList<>();
         int maxId;
-        for(int i=0;i<mSteps.size();i++)
-        {
+        for (int i = 0; i < mSteps.size(); i++) {
             tempList.add(Integer.parseInt(mSteps.get(i).getmId()));
         }
         maxId = Collections.max(tempList);
-        mMaxId=Integer.toString(maxId);
+        mMaxId = Integer.toString(maxId);
         tempList.clear();
 
 
     }
 
     public void setmMinId() {
-        List<Integer>  tempList = new ArrayList<>();
+        List<Integer> tempList = new ArrayList<>();
         int minId;
-        for(int i=0;i<mSteps.size();i++)
-        {
+        for (int i = 0; i < mSteps.size(); i++) {
             tempList.add(Integer.parseInt(mSteps.get(i).getmId()));
         }
         minId = Collections.min(tempList);
-        mMinId=Integer.toString(minId);
+        mMinId = Integer.toString(minId);
         tempList.clear();
 
-
-    }
-
-
-
-
-
-
-
-
-    public Recipe(String mId, String mRecipeName, String mServings, String mImage, List<Ingredient> mIngredients, List<Step> mSteps) {
-        this.mId = mId;
-        this.mRecipeName = mRecipeName;
-        this.mServings = mServings;
-        this.mImage = mImage;
-        if(mImage.isEmpty()) {
-            this.mRecipeFirstLetter = String.valueOf(mRecipeName.charAt(0)).toUpperCase();
-        }
-        else {
-            this.mRecipeFirstLetter = null;
-        }
-        this.mIngredients = mIngredients;
-        this.mSteps = mSteps;
-        this.mDefaultBackground = R.drawable.rating_circle ;
-        setmMaxId();
-        setmMinId();
 
     }
 
     public String getmId() {
         return mId;
     }
+
     public String getmRecipeFirstLetter() {
         return mRecipeFirstLetter;
     }
@@ -122,30 +126,18 @@ public class Recipe implements Parcelable {
     public String getmImage() {
         return mImage;
     }
+
     public List<Ingredient> getmIngredients() {
         return mIngredients;
     }
+
     public List<Step> getmSteps() {
         return mSteps;
     }
+
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    // De-parcel object
-    public Recipe(Parcel in) {
-        mId = in.readString();
-        mRecipeName = in.readString();
-        mServings = in.readString();
-        mImage = in.readString();
-        mRecipeFirstLetter = in.readString();
-        mIngredients = new ArrayList<>();
-        in.readList(mIngredients,Ingredient.class.getClassLoader());
-        mSteps = new ArrayList<>();
-        in.readList(mSteps,Step.class.getClassLoader());
-        mMaxId = in.readString();
-        mMinId = in.readString();
     }
 
     @Override
@@ -160,5 +152,5 @@ public class Recipe implements Parcelable {
         dest.writeString(mMaxId);
         dest.writeString(mMinId);
 
-        }
+    }
 }

@@ -1,19 +1,16 @@
 package com.example.codelabs.baking.ui.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.model.Step;
@@ -33,7 +30,6 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -41,80 +37,106 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
-//import com.example.codelabs.baking.databinding.ActivityStepDetailBinding;
 
-public class VideoPlayerFragment extends Fragment{
+public class VideoPlayerFragment extends Fragment {
+    //Declarations
     public static final String KEY_RESTART_WINDOW = "restart_window_key";
     private static final String KEY_RESTART_POSITION = "restart_position_key";
     private static final String KEY_FULLSCREEN = "fullscreen_key";
     private static final String KEY_STEP = "stepkey";
+    public static boolean mExoPlayerFullscreen = false;
+    public static boolean imageViewFlag = false;
+    public static boolean isRestored = false;
     SimpleExoPlayerView mPlayerView;
     SimpleExoPlayer player;
     MediaSource mVideoMediaSource;
-    public static  boolean mExoPlayerFullscreen = false;
     String videoUri;
+    String restoreUri;
+    String playingUri;
     Uri videoURI;
     View rootView;
+    ImageView thumbnailImageView;
     private Step mStepObject;
     private int mRestartWindow;
     private long mRestartPosition;
     private Dialog mFullScreenDialog;
-    ImageView thumbnailImageView;
 
-
+    //called on fragment creation
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.frame_videoplayer,container,false);
-        if (savedInstanceState != null){
+        rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
+        if (savedInstanceState != null) {
+            isRestored = true;
             mRestartPosition = savedInstanceState.getLong(KEY_RESTART_POSITION);
             mRestartWindow = savedInstanceState.getInt(KEY_RESTART_WINDOW);
-            videoUri = savedInstanceState.getString(KEY_STEP);
+            restoreUri = savedInstanceState.getString(KEY_STEP);
+            thumbnailImageView = (ImageView) rootView.findViewById(R.id.image_exoplayer);
 
+        } else {
+            isRestored = false;
         }
         return rootView;
 
 
     }
-    private void openFullscreenDialog() {
-        ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
-        mFullScreenDialog.addContentView(mPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mExoPlayerFullscreen = true;
-        mFullScreenDialog.show();
+
+    //invoked on entering the fullscreen mode
+    private void EnterFullScreenMode() {
+        if (videoURI == null | Uri.EMPTY.equals(videoURI)) {
+            //If the uri is null bring up the imageview and draw a dialog
+            ((ViewGroup) thumbnailImageView.getParent()).removeView(thumbnailImageView);
+            mFullScreenDialog.addContentView(thumbnailImageView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mExoPlayerFullscreen = true;
+            mFullScreenDialog.show();
+
+        } else {
+            //else bring up the playerview and draw a dialog
+            ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
+            mFullScreenDialog.addContentView(mPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mExoPlayerFullscreen = true;
+            mFullScreenDialog.show();
+        }
+
     }
 
-    private void closeFullscreenDialog() {
-        ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
-        ((FrameLayout)rootView.findViewById(R.id.main_media_frame)).addView(mPlayerView);
+    private void ExitFullscreen() {
+        // If player is not null remove player and add the frame
+        if (mPlayerView != null) {
+            ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
+            ((FrameLayout) rootView.findViewById(R.id.main_media_frame)).addView(mPlayerView);
+        } else {
+            //else remove imageview and add the frame
+            ((ViewGroup) thumbnailImageView.getParent()).removeView(thumbnailImageView);
+            ((FrameLayout) rootView.findViewById(R.id.main_media_frame)).addView(thumbnailImageView);
+
+        }
         mExoPlayerFullscreen = false;
         mFullScreenDialog.dismiss();
-        if(RecipeUtils.isLandscape(getContext()) && !this.getResources().getBoolean(R.bool.isTablet)) {
+        if (RecipeUtils.isLandscape(getContext()) && !this.getResources().getBoolean(R.bool.isTablet)) {
             if (getActivity() != null) {
-                ((ViewGroup)rootView.getParent()).setLayoutTransition(null);
-                ((ViewGroup)rootView.getParent()).setVisibility(View.GONE);
-                ((ViewGroup)rootView.getParent()).removeAllViews();
-
+                ((ViewGroup) rootView.getParent()).setLayoutTransition(null);
+                ((ViewGroup) rootView.getParent()).setVisibility(View.GONE);
+                ((ViewGroup) rootView.getParent()).removeAllViews();
                 getActivity().finish();
-                Intent bi = new Intent(this.getActivity(),RecipeDetailActivity.class);
+                Intent bi = new Intent(this.getActivity(), RecipeDetailActivity.class);
                 startActivity(bi);
             }
         }
-
-
     }
 
 
-    private void initFullscreenButton() {
-
-
-
-        if((!getContext().getResources().getBoolean(R.bool.isTablet)) && (RecipeUtils.isLandscape(getContext())) )
-            openFullscreenDialog();
+    private void setupFullScreenMode() {
+        //only for phonePortrait enter fullscreen mode
+        if ((!getContext().getResources().getBoolean(R.bool.isTablet)) && (RecipeUtils.isLandscape(getContext())))
+            EnterFullScreenMode();
         else
-            closeFullscreenDialog();
+            ExitFullscreen();
     }
 
 
     void initPlayer() {
+        //initialize constants and set up player
+
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
@@ -122,7 +144,6 @@ public class VideoPlayerFragment extends Fragment{
         player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getContext()), trackSelector, loadControl);
         mPlayerView.setPlayer(player);
         boolean haveResumePosition = mRestartWindow != C.INDEX_UNSET;
-
         if (haveResumePosition) {
             mPlayerView.getPlayer().seekTo(mRestartWindow, mRestartPosition);
         }
@@ -135,7 +156,7 @@ public class VideoPlayerFragment extends Fragment{
         mFullScreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
             public void onBackPressed() {
                 if (mExoPlayerFullscreen) {
-                    closeFullscreenDialog();
+                    ExitFullscreen();
                 }
 
                 super.onBackPressed();
@@ -144,43 +165,33 @@ public class VideoPlayerFragment extends Fragment{
     }
 
 
-
+    //Prepare Exoplayer to play video
     void preparePlayerToPlay(Uri mediaUri) {
+        playingUri = mediaUri.toString();
         DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("baking");
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
         mVideoMediaSource = new ExtractorMediaSource(mediaUri, dataSourceFactory, extractorsFactory, null, null);
     }
-    public void setmStepObject(Step mStepObject)
-    {
+
+    public void setmStepObject(Step mStepObject) {
         this.mStepObject = mStepObject;
     }
-    public void trigger(String uri)
-    {
+
+    public void trigger(String uri) {
         mRestartPosition = 0;
-        if(validateMediaUri(uri)) {
-            Uri triggerUri = Uri.parse(uri);
 
+          Uri triggerUri = Uri.parse(uri);
             preparePlayerToPlay(triggerUri);
-
             initPlayer();
 
             if (mExoPlayerFullscreen) {
                 ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
-
-
                 mFullScreenDialog.addContentView(mPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 mFullScreenDialog.show();
             }
         }
-//        else
-//        {
-//            mPlayerView.setVisibility(View.GONE);
-//            thumbnailImageView.setVisibility(View.VISIBLE);
-//            Picasso.with(getContext()).load(mStepObject.getmThumbNailUrl()).
-//                    error(R.drawable.video_not_found)
-//                    .into(thumbnailImageView);
-//        }
-    }
+
+
 
 
 
@@ -192,25 +203,34 @@ public class VideoPlayerFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        if(mPlayerView == null)
-        {
-            mPlayerView = (SimpleExoPlayerView)rootView.findViewById(R.id.exoplayer);
-            initFullscreenDialog();
-            initFullscreenButton();
-            preparePlayerToPlay(videoURI);
-
-
+        if (isRestored) {
+            if (restoreUri != null) {
+                videoURI = Uri.parse(restoreUri);
+            }
         }
 
-        initPlayer();
+            imageViewFlag = false;
+            if (thumbnailImageView != null) {
+                thumbnailImageView.setVisibility(View.GONE);
+            }
+            if (mPlayerView == null) {
+                mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exoplayer);
+                initFullscreenDialog();
+                setupFullScreenMode();
+                preparePlayerToPlay(videoURI);
 
-        if (mExoPlayerFullscreen) {
-            ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
-            mFullScreenDialog.addContentView(mPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            mFullScreenDialog.show();
+
+            }
+
+            initPlayer();
+
+            if (mExoPlayerFullscreen) {
+                ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
+                mFullScreenDialog.addContentView(mPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                mFullScreenDialog.show();
+            }
+
         }
-
-    }
 
 
 
@@ -228,24 +248,27 @@ public class VideoPlayerFragment extends Fragment{
     }
 
 
-
     @Override
     public void onStop() {
         super.onStop();
         if (Util.SDK_INT > 23) {
-            if(player!=null)
+            if (player != null)
                 player.release();
         }
     }
 
     @Override
-    public void onSaveInstanceState( Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (player != null) {
-            outState.putString(KEY_STEP, videoUri);
+            if (playingUri != null) {
+                outState.putString(KEY_STEP, playingUri);
+            } else {
+                outState.putString(KEY_STEP, videoUri);
+            }
+
             outState.putInt(KEY_RESTART_WINDOW, mRestartWindow);
             outState.putLong(KEY_RESTART_POSITION, mRestartPosition);
-            Toast.makeText(getContext(),"sadagopa" + Long.toString(mRestartPosition),Toast.LENGTH_LONG).show();
             outState.putBoolean(KEY_FULLSCREEN, mExoPlayerFullscreen);
 
         }
@@ -253,27 +276,7 @@ public class VideoPlayerFragment extends Fragment{
     }
 
     public void setMediaUrl(String uriString) {
-
-        if (uriString != null && !uriString.isEmpty()) {
-            videoURI = Uri.parse(uriString);
-        }
-        //else {
-//            thumbnailImageView = (ImageView)rootView.findViewById(R.id.image_exoplayer);
-//            //mPlayerView.setVisibility(View.GONE);
-//            thumbnailImageView.setVisibility(View.VISIBLE);
-//            Picasso.with(getContext()).load(mStepObject.getmThumbNailUrl()).
-//                    error(R.drawable.video_not_found)
-//                    .into(thumbnailImageView);
-//        }
-    }
-
-    boolean validateMediaUri(String uri) {
-
-        if (videoURI == null | Uri.EMPTY.equals(videoURI)) {
-            return false;
-        } else {
-            return true;
-        }
+        videoURI = Uri.parse(uriString);
     }
 
 

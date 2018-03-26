@@ -2,17 +2,17 @@ package com.example.codelabs.baking.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.model.Ingredient;
 import com.example.codelabs.baking.model.Recipe;
@@ -26,7 +26,7 @@ import com.example.codelabs.baking.utils.RecipeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeDetailActivity extends AppCompatActivity implements StepAdapter.StepDescriptionClickListener,StepDetailFragment.TextClicked {
+public class RecipeDetailActivity extends AppCompatActivity implements StepAdapter.StepDescriptionClickListener, StepDetailFragment.TextClicked {
     public static final String EXTRA_RECIPE_POSITION_RECIPE_DETAIL_ACTIVITY = "recipeclickedPosition";
     public static final String KEY_BUTTON_CLICK = "buttonclickkey";
     public static final String KEY_RECIPE_OBJECT = "ingredient_recipe_object_key";
@@ -34,21 +34,20 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
     public static final String KEY_VIDEO_PLAYER_FRAGMENT = "ingredient_video_player_fragment_key";
     public static final String KEY_STEP_DETAIL_FRAGMENT = "ingredient_step_detail_fragment_key";
     Recipe mRecipeObject;
-    private int buttonclick = 1;
     Bundle bundle;
     FragmentTransaction mFragmentTransaction;
     FragmentManager mFragmentManager;
-    private StepAdapter mStepAdapter;
-    private RecyclerView mStepRecyclerView;
     List<Ingredient> mIngredientList = new ArrayList<>();
-    private Intent mStepIntent;
     List<Step> mStepList;
     Step clickedStep;
     List<Recipe> mRecipeList = new ArrayList<>();
     IngredientFragment i;
     VideoPlayerFragment videoPlayerFragment;
     StepDetailFragment stepDetailFragment;
-
+    private int buttonclick = 1;
+    private StepAdapter mStepAdapter;
+    private RecyclerView mStepRecyclerView;
+    private Intent mStepIntent;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -92,7 +91,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
         i.setArguments(bundle);
 
         if (this.getResources().getBoolean(R.bool.isTablet)) {
-            Toast.makeText(this, "narayanaaa", Toast.LENGTH_SHORT).show();
             Intent mainIntentL = getIntent();
             mRecipeObject = mainIntentL.getParcelableExtra(EXTRA_RECIPE_POSITION_RECIPE_DETAIL_ACTIVITY);
             mIngredientList = mRecipeObject.getmIngredients();
@@ -143,21 +141,17 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (this.getResources().getBoolean(R.bool.isTablet) && RecipeUtils.isLandscape(this)) {
-            //StepDetailFragment stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().findFragmentById(R.id.frame_description);
             stepDetailFragment = new StepDetailFragment();
             stepDetailFragment.setStepClickedRecipeObject(mRecipeObject);
             stepDetailFragment.setStepObject(clickedStep);
             fragmentTransaction.replace(R.id.recipe_step_description_container, stepDetailFragment);
-            VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+            videoPlayerFragment = new VideoPlayerFragment();
             videoPlayerFragment.setmStepObject(clickedStep);
+            videoPlayerFragment.setMediaUrl(clickedStep.getmVideoUrl());
             fragmentTransaction.replace(R.id.recipe_video_container, videoPlayerFragment);
-            //fragmentTransaction.addToBackStack(null);
+
             fragmentTransaction.commit();
-        }
-//
-//
-//
-        else  {
+        } else {
             clickedStep = mStepList.get(clickedItemIndex);
             mStepIntent = new Intent(RecipeDetailActivity.this, StepDetailActivity.class);
             mStepIntent.putExtra(StepDetailActivity.EXTRA_STEP_POSITION, clickedStep);
@@ -172,7 +166,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.fragment_ingredient_container, fragment);
-        //mFragmentTransaction.addToBackStack(null);
         mFragmentTransaction.commit();
     }
 
@@ -183,11 +176,14 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
         }
     }
 
+    @Override
+    public void sendDescription(Step mStepObject) {
+        if (stepDetailFragment != null) {
+            stepDetailFragment.setDescription(mStepObject.getmDescription());
+        }
+    }
 
 
-
-//
-//
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -203,7 +199,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
             i = new IngredientFragment();
             i.setArguments(bundle);
             if (clickedStep != null) {
-
                 videoPlayerFragment = new VideoPlayerFragment();
                 videoPlayerFragment.setmStepObject(clickedStep);
                 videoPlayerFragment.setMediaUrl(clickedStep.getmVideoUrl());
@@ -212,13 +207,11 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
                 stepDetailFragment.setStepObject(clickedStep);
                 fragmentTransaction.replace(R.id.recipe_video_container, videoPlayerFragment);
                 fragmentTransaction.replace(R.id.recipe_step_description_container, stepDetailFragment);
-                //fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
 
             }
 
-   }
- else if (this.getResources().getBoolean(R.bool.isTablet) && !RecipeUtils.isLandscape(this)) {
+        } else if (this.getResources().getBoolean(R.bool.isTablet) && !RecipeUtils.isLandscape(this)) {
             if (clickedStep != null) {
                 mRecipeObject = savedInstanceState.getParcelable(KEY_RECIPE_OBJECT);
                 clickedStep = savedInstanceState.getParcelable(KEY_STEP_OBJECT);
@@ -228,6 +221,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
                 startActivity(mStepIntent);
 
             }
+
         }
 
     }
@@ -240,16 +234,13 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
             if (getFragmentManager().getBackStackEntryCount() > 1) {
                 getFragmentManager().popBackStack();
             }
-            }
+        }
 
-        if(this.getResources().getBoolean(R.bool.isTablet))
-        {
-            if(findViewById(R.id.frame_description) != null)
-            {
+        if (this.getResources().getBoolean(R.bool.isTablet)) {
+            if (findViewById(R.id.frame_description) != null) {
                 findViewById(R.id.frame_description).setVisibility(View.GONE);
             }
-            if(findViewById(R.id.recipe_step_description_container) != null)
-            {
+            if (findViewById(R.id.recipe_step_description_container) != null) {
                 findViewById(R.id.recipe_step_description_container).setVisibility(View.GONE);
             }
         }

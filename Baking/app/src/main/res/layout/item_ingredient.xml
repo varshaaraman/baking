@@ -1,45 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="ingredient"
-            type="com.example.codelabs.baking.model.Ingredient"/>
+            type="com.example.codelabs.baking.model.Ingredient" />
     </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="1dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginTop="1dp"
-        android:background="@color/pale_golden_rod">
+        android:layout_marginBottom="@dimen/size_1dp"
+        android:layout_marginLeft="@dimen/size_2dp"
+        android:layout_marginRight="@dimen/size_2dp"
+        android:layout_marginTop="@dimen/size_1dp"
+        android:background="@color/pale_golden_rod"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_ingredient_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            tools:text = "Name"
-            android:gravity="start"
             android:layout_gravity="start"
-            android:textColor="@color/dark_olive_green"
-            android:elevation="100dp"
-            android:orientation="horizontal"
+            android:elevation="@dimen/elevation_100dp"
+            android:gravity="start"
             android:layoutDirection="locale"
-            android:padding = "5dp"
-            android:text="@{ingredient.mIngredientName}"/>
+            android:orientation="horizontal"
+            android:padding="@dimen/size_5dp"
+            android:text="@{ingredient.mIngredientName}"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/dark_olive_green"
+            tools:text="@string/default_ingredient" />
 
         <TextView
             android:id="@+id/text_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{ingredient.mFormattedQuantity}"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="quantity"
             android:textColor="@color/dark_olive_green"
-            android:text="@{ingredient.mFormattedQuantity}"/>
+            tools:text="quantity" />
 
     </LinearLayout>
 </layout>

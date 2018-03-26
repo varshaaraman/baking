@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stepdetail"
+            type="com.example.codelabs.baking.model.Step" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_step_description"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_0dp"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/size_10dp"
+            android:layout_marginLeft="@dimen/size_10dp"
+            android:layout_marginRight="@dimen/size_10dp"
+            android:layout_marginTop="@dimen/size_10dp"
+            android:layout_weight="0.45"
+            android:background="@color/pale_golden_rod"
+            android:elevation="@dimen/elevation_100dp"
+            android:gravity="center"
+            android:layoutDirection="locale"
+            android:padding="@dimen/size_25dp"
+            android:text="@{stepdetail.mDescription}"
+            android:textColor="@color/dark_olive_green"
+            tools:text="@string/default_step" />
+
+        <RelativeLayout
+            android:id="@+id/root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_0dp"
+            android:layout_weight="0.15"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/button_previous_step"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:background="@color/pale_golden_rod"
+                android:clickable="true"
+                android:contentDescription="@string/content_description_back_button"
+                android:src="@drawable/ic_skip_previous_black_24dp"
+                android:tint="@color/dark_olive_green" />
+
+            <ImageButton
+                android:id="@+id/button_next_step"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@color/pale_golden_rod"
+                android:clickable="true"
+                android:contentDescription="@string/content_description_forward_button"
+                android:src="@drawable/ic_skip_next_black_24dp"
+                android:tint="@color/dark_olive_green" />
+
+        </RelativeLayout>
+    </LinearLayout>
+</layout>

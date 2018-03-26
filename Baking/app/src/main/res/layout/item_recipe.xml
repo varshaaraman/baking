@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="recipe"
-            type="com.example.codelabs.baking.model.Recipe"/>
-        <import type="android.view.View"/>
+            type="com.example.codelabs.baking.model.Recipe" />
+
+        <import type="android.view.View" />
     </data>
+
     <LinearLayout
+        android:id="@+id/list_row"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginBottom="10dp"
@@ -17,41 +21,42 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:background="@color/pale_golden_rod"
-        android:elevation="100dp"
-        android:orientation="horizontal"
-        android:layoutDirection="locale"
-        android:padding = "5dp"
         android:clickable="true"
-        android:id="@+id/list_row">
+        android:elevation="100dp"
+        android:layoutDirection="locale"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
         <TextView
-        android:id="@+id/text_recipe_label"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="center_vertical"
-        android:background="@drawable/rating_circle"
-        android:visibility="@{recipe.mRecipeFirstLetter == null ? View.GONE : View.VISIBLE}"
-        android:fontFamily="sans-serif-condensed"
-        android:gravity="center"
-        android:layout_margin = "5dp"
-        android:textColor="@android:color/white"
-        android:textSize="10sp"
-        android:text="@{recipe.mRecipeFirstLetter}"
-        tools:text="A"  />
-        <ImageView
-            android:id="@+id/iv_recipe_poster"
+            android:id="@+id/text_recipe_label"
             android:layout_width="20dp"
             android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
+            android:background="@drawable/rating_circle"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="@{recipe.mRecipeFirstLetter}"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:visibility="@{recipe.mRecipeFirstLetter == null ? View.GONE : View.VISIBLE}"
+            tools:text="A" />
+
+        <ImageView
+            android:id="@+id/iv_recipe_poster"
+            android:layout_width="@dimen/size_20dp"
+            android:layout_height="@dimen/size_20dp"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
-            android:scaleType="fitXY"
             android:contentDescription="@string/content_description_recipe_poster"
-            android:visibility="@{recipe.mImage == null ? View.GONE : View.VISIBLE}"/>
+            android:scaleType="fitXY"
+            android:visibility="@{recipe.mImage == null ? View.GONE : View.VISIBLE}" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="@dimen/size_0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="@dimen/size_5dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -60,24 +65,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:text="@{recipe.mRecipeName}"
                 android:textColor="#000000"
                 android:textSize="@dimen/textsize_15sp"
-                tools:text="@string/sample_recipe"
-                android:text="@{recipe.mRecipeName}"/>
+                tools:text="@string/sample_recipe" />
 
 
-                <TextView
-                    android:id="@+id/text_Servings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#000066"
-                    android:textSize="@dimen/textsize_10sp"
-                    tools:text="sample_servings"
-                    android:text="@{recipe.mServings}"/>
+            <TextView
+                android:id="@+id/text_Servings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{recipe.mServings}"
+                android:textColor="#000066"
+                android:textSize="@dimen/textsize_10sp"
+                tools:text="sample_servings" />
 
 
         </LinearLayout>
 
     </LinearLayout>
 
-  </layout>
+</layout>
