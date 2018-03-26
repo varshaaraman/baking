@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.model.Recipe;
@@ -37,8 +35,8 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
     StepDetailFragment stepDetailFragment;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
-    private Step mStepObject,mStepObjectBackup;
-    private Recipe mClickedRecipe,mClickedRecipeBackup;
+    private Step mStepObject, mStepObjectBackup;
+    private Recipe mClickedRecipe, mClickedRecipeBackup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +46,7 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
         mStepObject = mStepObjectBackup = stepIntent.getParcelableExtra(EXTRA_STEP_POSITION);
         mClickedRecipe = mClickedRecipeBackup = stepIntent.getParcelableExtra(EXTRA_RECIPE_ID);
         getSupportActionBar().setTitle(mClickedRecipe.getmRecipeName());
-        if(this.getResources().getBoolean(R.bool.isTablet) && RecipeUtils.isLandscape(this))
-        {
+        if (this.getResources().getBoolean(R.bool.isTablet) && RecipeUtils.isLandscape(this)) {
             finish();
         }
         fragmentManager = getSupportFragmentManager();
@@ -121,24 +118,20 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
         super.onRestoreInstanceState(savedInstanceState);
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        if(savedInstanceState.getParcelable(KEY_STEP_POSITION) != null) {
+        if (savedInstanceState.getParcelable(KEY_STEP_POSITION) != null) {
             mStepObject = savedInstanceState.getParcelable(KEY_STEP_POSITION);
+        } else {
+            mStepObject = mStepObjectBackup;
         }
-        else
-        {
-           mStepObject = mStepObjectBackup;
-        }
-        if(savedInstanceState.getParcelable(KEY_RECIPE_ID) != null) {
+        if (savedInstanceState.getParcelable(KEY_RECIPE_ID) != null) {
             mClickedRecipe = savedInstanceState.getParcelable(KEY_RECIPE_ID);
-        }
-        else
-        {
+        } else {
             mClickedRecipe = mClickedRecipeBackup;
         }
         if (getSupportFragmentManager().findFragmentByTag("video_player_fragment") != null) {
             videoPlayerfragment = (VideoPlayerFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT);
-            videoPlayerfragment.setmStepObject(mStepObject);
-            videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
+//            videoPlayerfragment.setmStepObject(mStepObject);
+//            videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
         } else {
             videoPlayerfragment = new VideoPlayerFragment();
             videoPlayerfragment.setmStepObject(mStepObject);
@@ -147,8 +140,8 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
 
         if (getSupportFragmentManager().findFragmentByTag("step_detail_fragment") != null) {
             stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT);
-            stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
-            stepDetailFragment.setStepObject(mStepObject);
+//            stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
+//            stepDetailFragment.setStepObject(mStepObject);
 
         } else {
             stepDetailFragment = new StepDetailFragment();
@@ -157,30 +150,34 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
 
         }
         if (!(RecipeUtils.isLandscape(StepDetailActivity.this))) {
-            mStepObject = savedInstanceState.getParcelable(KEY_STEP_POSITION);
-            mClickedRecipe = savedInstanceState.getParcelable(KEY_RECIPE_ID);
+
+            Toast.makeText(this, "ls elsuu stepid" + mStepObject.getmId(), Toast.LENGTH_LONG).show();
             fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment);
             fragmentTransaction.replace(R.id.frame_description, stepDetailFragment);
-            clearBackStack();
+            if (videoPlayerfragment.isAdded()) {
+                Toast.makeText(this, "vp fragment irukku", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "vp fragment illa", Toast.LENGTH_SHORT).show();
+            }
+            //clearBackStack();
+            if (videoPlayerfragment.isAdded()) {
+                Toast.makeText(this, "sd fragment irukku", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "sd fragment illa", Toast.LENGTH_SHORT).show();
+            }
 
         } else {
             mStepObject = savedInstanceState.getParcelable(KEY_STEP_POSITION);
             mClickedRecipe = savedInstanceState.getParcelable(KEY_RECIPE_ID);
             fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment);
-            clearBackStack();
+            //fragmentTransaction.show(stepDetailFragment);
+
+            //clearBackStack();
         }
 
         fragmentTransaction.commit();
     }
 
-
-    private void clearBackStack() {
-        FragmentManager manager = getSupportFragmentManager();
-        if (manager.getBackStackEntryCount() > 0) {
-            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
-            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-    }
 
     @Override
     public void sendVideoUrl(Step mStepooo) {
@@ -193,33 +190,6 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.finish();
-        int fragments = getSupportFragmentManager().getBackStackEntryCount();
-        if (fragments == 1) {
-            finish();
-        } else {
-            if (getFragmentManager().getBackStackEntryCount() > 1) {
-                getFragmentManager().popBackStack();
-                finish();
-            } else {
-                super.onBackPressed();
-            }
-        }
-        if (this.getResources().getBoolean(R.bool.isTablet) && !RecipeUtils.isLandscape(this)) {
-
-            if (findViewById(R.id.frame_description) != null) {
-
-                clearBackStack();
-                ((ViewGroup) findViewById(R.id.frame_description).getParent()).setVisibility(View.GONE);
-                ((ViewGroup) findViewById(R.id.frame_description).getParent()).removeAllViews();
-                this.finish();
-
-            }
-
-        }
-
-    }
 }
+
 
