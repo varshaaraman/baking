@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/content_description_video_not_found"
             android:gravity="center"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:visibility="gone"
             tools:src="@drawable/video_not_found" />
 

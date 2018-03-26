@@ -42,11 +42,19 @@ public class VideoPlayerFragment extends Fragment {
     //Declarations
     public static final String KEY_RESTART_WINDOW = "restart_window_key";
     private static final String KEY_RESTART_POSITION = "restart_position_key";
-    private static final String KEY_FULLSCREEN = "fullscreen_key";
-    private static final String KEY_STEP = "stepkey";
+    private static final String KEY_FULLSCREEN = "full_screen_key";
+    private static final String KEY_STEP = "step_key";
+    private static final String KEY_IMAGE_FLAG = "image_flag_key";
+    private static final String KEY_PLAY_WHEN_READY = "play_when_ready_key";
     public static boolean mExoPlayerFullscreen = false;
     public static boolean imageViewFlag = false;
     public static boolean isRestored = false;
+
+    public void setmThumbnailUrl(String mThumbnailUrl) {
+        this.mThumbnailUrl = mThumbnailUrl;
+    }
+
+    public String mThumbnailUrl;
     SimpleExoPlayerView mPlayerView;
     SimpleExoPlayer player;
     MediaSource mVideoMediaSource;
@@ -60,6 +68,7 @@ public class VideoPlayerFragment extends Fragment {
     private int mRestartWindow;
     private long mRestartPosition;
     private Dialog mFullScreenDialog;
+    private boolean mPlayWhenReady = true;
 
     //called on fragment creation
     @Override
@@ -70,8 +79,9 @@ public class VideoPlayerFragment extends Fragment {
             mRestartPosition = savedInstanceState.getLong(KEY_RESTART_POSITION);
             mRestartWindow = savedInstanceState.getInt(KEY_RESTART_WINDOW);
             restoreUri = savedInstanceState.getString(KEY_STEP);
+            imageViewFlag = savedInstanceState.getBoolean(KEY_IMAGE_FLAG);
             thumbnailImageView = (ImageView) rootView.findViewById(R.id.image_exoplayer);
-
+            mPlayWhenReady = savedInstanceState.getBoolean(KEY_PLAY_WHEN_READY);
         } else {
             isRestored = false;
         }
@@ -177,10 +187,43 @@ public class VideoPlayerFragment extends Fragment {
         this.mStepObject = mStepObject;
     }
 
-    public void trigger(String uri) {
+    public void trigger(String uri, String thumbnail) {
         mRestartPosition = 0;
+        thumbnailImageView = (ImageView) rootView.findViewById(R.id.image_exoplayer);
+        Uri triggerUri = Uri.parse(uri);
+        setmThumbnailUrl(thumbnail);
+        mThumbnailUrl = thumbnail;
+        if ((triggerUri == null | Uri.EMPTY.equals(triggerUri))) {
+            playingUri = "";
+            imageViewFlag = true;
+            thumbnailImageView = (ImageView) rootView.findViewById(R.id.image_exoplayer);
+            if (mPlayerView != null) {
+                mPlayerView.setVisibility(View.GONE);
+            }
+            thumbnailImageView.setVisibility(View.VISIBLE);
 
-          Uri triggerUri = Uri.parse(uri);
+            if (mThumbnailUrl == null || mThumbnailUrl.length() == 0) {
+                thumbnailImageView.setImageResource(R.drawable.video_not_found);
+            } else {
+                Picasso.with(getContext()).load(mThumbnailUrl).
+                        error(R.drawable.video_not_found)
+                        .into(thumbnailImageView);
+            }
+
+            if (RecipeUtils.isLandscape(getContext()) && !this.getResources().getBoolean(R.bool.isTablet)) {
+                initFullscreenDialog();
+                ((ViewGroup) thumbnailImageView.getParent()).removeView(thumbnailImageView);
+                mFullScreenDialog.addContentView(thumbnailImageView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                mFullScreenDialog.show();
+                mExoPlayerFullscreen = true;
+            }
+        } else {
+            imageViewFlag = false;
+
+            if (thumbnailImageView != null) {
+                thumbnailImageView.setVisibility(View.GONE);
+            }
+            mPlayerView.setVisibility(View.VISIBLE);
             preparePlayerToPlay(triggerUri);
             initPlayer();
 
@@ -189,10 +232,9 @@ public class VideoPlayerFragment extends Fragment {
                 mFullScreenDialog.addContentView(mPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 mFullScreenDialog.show();
             }
+
         }
-
-
-
+    }
 
 
     @Override
@@ -204,10 +246,68 @@ public class VideoPlayerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (isRestored) {
-            if (restoreUri != null) {
-                videoURI = Uri.parse(restoreUri);
+            if (restoreUri != null | imageViewFlag) {
+                if (!imageViewFlag) {
+                    videoURI = Uri.parse(restoreUri);
+                } else {
+                    videoURI = null;
+                }
             }
         }
+        if ((videoURI == null | Uri.EMPTY.equals(videoURI))) {
+            mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exoplayer);
+            playingUri = "";
+            imageViewFlag = true;
+            thumbnailImageView = (ImageView)
+                    rootView.findViewById(R.id.image_exoplayer);
+            if (mPlayerView != null) {
+                mPlayerView.setVisibility(View.GONE);
+            }
+            thumbnailImageView.setVisibility(View.VISIBLE);
+            if (RecipeUtils.isLandscape(getContext()) && !this.getResources().getBoolean(R.bool.isTablet)) {
+                mExoPlayerFullscreen = true;
+                if (mStepObject != null) {
+                    if (mStepObject.getmThumbNailUrl().isEmpty()) {
+                        thumbnailImageView.setImageResource(R.drawable.video_not_found);
+                    } else {
+                        Picasso.with(getContext()).load(mStepObject.getmThumbNailUrl()).
+                                error(R.drawable.video_not_found)
+                                .into(thumbnailImageView);
+                    }
+
+
+                } else {
+                    if (mThumbnailUrl == null) {
+                        thumbnailImageView.setImageResource(R.drawable.video_not_found);
+                    } else {
+                        Picasso.with(getContext()).load(mThumbnailUrl).
+                                error(R.drawable.video_not_found)
+                                .into(thumbnailImageView);
+                    }
+
+                }
+                initFullscreenDialog();
+                setupFullScreenMode();
+                if (mExoPlayerFullscreen) {
+                    ((ViewGroup) thumbnailImageView.getParent()).removeView(thumbnailImageView);
+                    mFullScreenDialog.addContentView(thumbnailImageView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    mFullScreenDialog.show();
+                }
+
+            } else {
+                if (mStepObject != null) {
+                    if (mStepObject.getmThumbNailUrl().isEmpty()) {
+                        thumbnailImageView.setImageResource(R.drawable.video_not_found);
+                    } else {
+                        Picasso.with(getContext()).load(mStepObject.getmThumbNailUrl()).
+                                error(R.drawable.video_not_found)
+                                .into(thumbnailImageView);
+                    }
+
+                }
+            }
+
+        } else {
 
             imageViewFlag = false;
             if (thumbnailImageView != null) {
@@ -231,13 +331,14 @@ public class VideoPlayerFragment extends Fragment {
             }
 
         }
-
+    }
 
 
     @Override
     public void onPause() {
         super.onPause();
         if (mPlayerView != null && mPlayerView.getPlayer() != null) {
+            mPlayWhenReady = player.getPlayWhenReady();
             mRestartWindow = mPlayerView.getPlayer().getCurrentWindowIndex();
             mRestartPosition = Math.max(0, mPlayerView.getPlayer().getContentPosition());
             mPlayerView.getPlayer().release();
@@ -266,10 +367,12 @@ public class VideoPlayerFragment extends Fragment {
             } else {
                 outState.putString(KEY_STEP, videoUri);
             }
-
+            //persist the state of playwhenready on configuration changes
+            outState.putBoolean(KEY_PLAY_WHEN_READY, mPlayWhenReady);
             outState.putInt(KEY_RESTART_WINDOW, mRestartWindow);
             outState.putLong(KEY_RESTART_POSITION, mRestartPosition);
             outState.putBoolean(KEY_FULLSCREEN, mExoPlayerFullscreen);
+            outState.putBoolean(KEY_IMAGE_FLAG, imageViewFlag);
 
         }
 
@@ -281,7 +384,6 @@ public class VideoPlayerFragment extends Fragment {
 
 
 }
-
 
 
 

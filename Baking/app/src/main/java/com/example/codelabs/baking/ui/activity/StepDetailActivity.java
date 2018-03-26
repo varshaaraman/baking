@@ -55,6 +55,7 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
             videoPlayerfragment = new VideoPlayerFragment();
             videoPlayerfragment.setmStepObject(mStepObject);
             videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
+            videoPlayerfragment.setmThumbnailUrl(mStepObject.getmThumbNailUrl());
             stepDetailFragment = new StepDetailFragment();
             stepDetailFragment.setStepObject(mStepObject);
             stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
@@ -77,6 +78,7 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
                 videoPlayerfragment = new VideoPlayerFragment();
                 videoPlayerfragment.setmStepObject(mStepObject);
                 videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
+                videoPlayerfragment.setmThumbnailUrl(mStepObject.getmThumbNailUrl());
             }
 
             if (getSupportFragmentManager().findFragmentByTag("step_detail_fragment") != null) {
@@ -136,6 +138,7 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
             videoPlayerfragment = new VideoPlayerFragment();
             videoPlayerfragment.setmStepObject(mStepObject);
             videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
+            videoPlayerfragment.setmThumbnailUrl(mStepObject.getmThumbNailUrl());
         }
 
         if (getSupportFragmentManager().findFragmentByTag("step_detail_fragment") != null) {
@@ -147,6 +150,7 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
             stepDetailFragment = new StepDetailFragment();
             stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
             stepDetailFragment.setStepObject(mStepObject);
+            videoPlayerfragment.setmThumbnailUrl(mStepObject.getmThumbNailUrl());
 
         }
         if (!(RecipeUtils.isLandscape(StepDetailActivity.this))) {
@@ -181,7 +185,7 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
 
     @Override
     public void sendVideoUrl(Step mStepooo) {
-        videoPlayerfragment.trigger(mStepooo.getmVideoUrl());
+        videoPlayerfragment.trigger(mStepooo.getmVideoUrl(),mStepooo.getmThumbNailUrl());
     }
 
     @Override
