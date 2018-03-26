@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.model.Step;
@@ -50,15 +52,11 @@ public class VideoPlayerFragment extends Fragment {
     public static boolean imageViewFlag = false;
     public static boolean isRestored = false;
 
-    public void setmThumbnailUrl(String mThumbnailUrl) {
-        this.mThumbnailUrl = mThumbnailUrl;
-    }
-
     public String mThumbnailUrl;
     SimpleExoPlayerView mPlayerView;
     SimpleExoPlayer player;
     MediaSource mVideoMediaSource;
-    String videoUri;
+    public String videoUri;
     String restoreUri;
     String playingUri;
     Uri videoURI;
@@ -70,10 +68,13 @@ public class VideoPlayerFragment extends Fragment {
     private Dialog mFullScreenDialog;
     private boolean mPlayWhenReady = true;
 
+
+
     //called on fragment creation
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
+        Toast.makeText(getContext(), "fragmentoda creatuu" + videoUri, Toast.LENGTH_SHORT).show();
         if (savedInstanceState != null) {
             isRestored = true;
             mRestartPosition = savedInstanceState.getLong(KEY_RESTART_POSITION);
@@ -112,7 +113,12 @@ public class VideoPlayerFragment extends Fragment {
     private void ExitFullscreen() {
         // If player is not null remove player and add the frame
         if (mPlayerView != null) {
+            String k = Integer.toString(((ViewGroup) mPlayerView.getParent()).getVisibility());
+            String zo = Integer.toString(mPlayerView.getVisibility());
+            //mPlayerView.g
+            Toast.makeText(getContext(),"framu:" + k + "playo:" + zo,Toast.LENGTH_LONG).show();
             ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
+            ((FrameLayout) rootView.findViewById(R.id.main_media_frame)).setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             ((FrameLayout) rootView.findViewById(R.id.main_media_frame)).addView(mPlayerView);
         } else {
             //else remove imageview and add the frame
@@ -254,6 +260,7 @@ public class VideoPlayerFragment extends Fragment {
                 }
             }
         }
+        Toast.makeText(getContext(), "fragmentoda resumuu" + "p: " + playingUri + "v: " + restoreUri , Toast.LENGTH_SHORT).show();
         if ((videoURI == null | Uri.EMPTY.equals(videoURI))) {
             mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exoplayer);
             playingUri = "";
@@ -367,6 +374,7 @@ public class VideoPlayerFragment extends Fragment {
             } else {
                 outState.putString(KEY_STEP, videoUri);
             }
+            Toast.makeText(getContext(), "fragmentoda osis" + "p: " + playingUri + "v: " + videoUri, Toast.LENGTH_SHORT).show();
             //persist the state of playwhenready on configuration changes
             outState.putBoolean(KEY_PLAY_WHEN_READY, mPlayWhenReady);
             outState.putInt(KEY_RESTART_WINDOW, mRestartWindow);
@@ -380,6 +388,10 @@ public class VideoPlayerFragment extends Fragment {
 
     public void setMediaUrl(String uriString) {
         videoURI = Uri.parse(uriString);
+    }
+
+    public void setmThumbnailUrl(String mThumbnailUrl) {
+        this.mThumbnailUrl = mThumbnailUrl;
     }
 
 
