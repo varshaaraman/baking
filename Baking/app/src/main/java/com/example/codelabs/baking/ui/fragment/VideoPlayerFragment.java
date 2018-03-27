@@ -158,7 +158,7 @@ public class VideoPlayerFragment extends Fragment {
             mPlayerView.getPlayer().seekTo(mRestartWindow, mRestartPosition);
         }
         mPlayerView.getPlayer().prepare(mVideoMediaSource);
-        mPlayerView.getPlayer().setPlayWhenReady(true);
+        mPlayerView.getPlayer().setPlayWhenReady(mPlayWhenReady);
     }
 
     private void initFullscreenDialog() {
