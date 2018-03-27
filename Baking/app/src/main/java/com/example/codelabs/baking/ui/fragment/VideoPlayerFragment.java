@@ -1,7 +1,6 @@
 package com.example.codelabs.baking.ui.fragment;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,12 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.model.Step;
-import com.example.codelabs.baking.ui.activity.RecipeDetailActivity;
 import com.example.codelabs.baking.utils.RecipeUtils;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -62,6 +58,11 @@ public class VideoPlayerFragment extends Fragment {
     Uri videoURI;
     View rootView;
     ImageView thumbnailImageView;
+
+    public Step getmStepObject() {
+        return mStepObject;
+    }
+
     private Step mStepObject;
     private int mRestartWindow;
     private long mRestartPosition;
@@ -69,12 +70,10 @@ public class VideoPlayerFragment extends Fragment {
     private boolean mPlayWhenReady = true;
 
 
-
     //called on fragment creation
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
-        Toast.makeText(getContext(), "fragmentoda creatuu" + videoUri, Toast.LENGTH_SHORT).show();
         if (savedInstanceState != null) {
             isRestored = true;
             mRestartPosition = savedInstanceState.getLong(KEY_RESTART_POSITION);
@@ -93,7 +92,7 @@ public class VideoPlayerFragment extends Fragment {
 
     //invoked on entering the fullscreen mode
     private void EnterFullScreenMode() {
-        if (videoURI == null | Uri.EMPTY.equals(videoURI)) {
+        if (videoURI == null | Uri.EMPTY.equals(videoURI) | imageViewFlag) {
             //If the uri is null bring up the imageview and draw a dialog
             ((ViewGroup) thumbnailImageView.getParent()).removeView(thumbnailImageView);
             mFullScreenDialog.addContentView(thumbnailImageView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -111,15 +110,10 @@ public class VideoPlayerFragment extends Fragment {
     }
 
     private void ExitFullscreen() {
-        // If player is not null remove player and add the frame
         if (mPlayerView != null) {
-            String k = Integer.toString(((ViewGroup) mPlayerView.getParent()).getVisibility());
-            String zo = Integer.toString(mPlayerView.getVisibility());
-            //mPlayerView.g
-            Toast.makeText(getContext(),"framu:" + k + "playo:" + zo,Toast.LENGTH_LONG).show();
             ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
-            ((FrameLayout) rootView.findViewById(R.id.main_media_frame)).setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             ((FrameLayout) rootView.findViewById(R.id.main_media_frame)).addView(mPlayerView);
+            ((FrameLayout) rootView.findViewById(R.id.main_media_frame)).setVisibility(View.VISIBLE);
         } else {
             //else remove imageview and add the frame
             ((ViewGroup) thumbnailImageView.getParent()).removeView(thumbnailImageView);
@@ -130,12 +124,12 @@ public class VideoPlayerFragment extends Fragment {
         mFullScreenDialog.dismiss();
         if (RecipeUtils.isLandscape(getContext()) && !this.getResources().getBoolean(R.bool.isTablet)) {
             if (getActivity() != null) {
-                ((ViewGroup) rootView.getParent()).setLayoutTransition(null);
-                ((ViewGroup) rootView.getParent()).setVisibility(View.GONE);
-                ((ViewGroup) rootView.getParent()).removeAllViews();
-                getActivity().finish();
-                Intent bi = new Intent(this.getActivity(), RecipeDetailActivity.class);
-                startActivity(bi);
+//                ((ViewGroup) rootView.getParent()).setLayoutTransition(null);
+//                ((ViewGroup) rootView.getParent()).setVisibility(View.GONE);
+//                ((ViewGroup) rootView.getParent()).removeAllViews();
+//                getActivity().finish();
+//                Intent bi = new Intent(this.getActivity(), RecipeDetailActivity.class);
+//                startActivity(bi);
             }
         }
     }
@@ -233,8 +227,11 @@ public class VideoPlayerFragment extends Fragment {
             preparePlayerToPlay(triggerUri);
             initPlayer();
 
-            if (mExoPlayerFullscreen) {
+            if (RecipeUtils.isLandscape(getContext()) && !this.getResources().getBoolean(R.bool.isTablet)) {
                 ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
+                if (mFullScreenDialog == null) {
+                    initFullscreenDialog();
+                }
                 mFullScreenDialog.addContentView(mPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 mFullScreenDialog.show();
             }
@@ -260,7 +257,6 @@ public class VideoPlayerFragment extends Fragment {
                 }
             }
         }
-        Toast.makeText(getContext(), "fragmentoda resumuu" + "p: " + playingUri + "v: " + restoreUri , Toast.LENGTH_SHORT).show();
         if ((videoURI == null | Uri.EMPTY.equals(videoURI))) {
             mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exoplayer);
             playingUri = "";
@@ -369,12 +365,12 @@ public class VideoPlayerFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (player != null) {
-            if (playingUri != null) {
+            if (playingUri != null | imageViewFlag) {
                 outState.putString(KEY_STEP, playingUri);
             } else {
                 outState.putString(KEY_STEP, videoUri);
             }
-            Toast.makeText(getContext(), "fragmentoda osis" + "p: " + playingUri + "v: " + videoUri, Toast.LENGTH_SHORT).show();
+
             //persist the state of playwhenready on configuration changes
             outState.putBoolean(KEY_PLAY_WHEN_READY, mPlayWhenReady);
             outState.putInt(KEY_RESTART_WINDOW, mRestartWindow);

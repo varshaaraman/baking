@@ -28,6 +28,15 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
     public static final String EXTRA_RECIPE_ID = "clickedrecipeid";
     public static final String KEY_STEP_DESCRIPTION = "descriptionstepkey";
     public static final String KEY_CLICKED_RECIPE = "recipeclickedkey";
+
+    public Step getmStepObject() {
+        return mStepObject;
+    }
+
+    public Recipe getmClickedRecipe() {
+        return mClickedRecipe;
+    }
+
     private Step mStepObject;
     TextClicked mCallback;
     private Recipe mClickedRecipe;
@@ -93,6 +102,8 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
         this.mStepObject = mStepObject;
 
     }
+
+
 
     public void setStepClickedRecipeObject(Recipe mClickedRecipe) {
         this.mClickedRecipe = mClickedRecipe;

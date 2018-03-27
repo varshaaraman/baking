@@ -172,7 +172,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
     @Override
     public void sendVideoUrl(Step mStepooo) {
         if (videoPlayerFragment != null) {
-            videoPlayerFragment.trigger(mStepooo.getmVideoUrl(),mStepooo.getmThumbNailUrl());
+            videoPlayerFragment.trigger(mStepooo.getmVideoUrl(), mStepooo.getmThumbNailUrl());
         }
     }
 

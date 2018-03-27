@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.databinding.ItemStepBinding;
 import com.example.codelabs.baking.model.Step;
+import com.example.codelabs.baking.ui.activity.StepDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,25 +19,27 @@ import java.util.List;
  * Created by varshaa on 22-02-2018.
  */
 
-public class StepAdapter extends  RecyclerView.Adapter<StepAdapter.StepViewHolder> {
+public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
     private Context mContext;
     private List<Step> mStepList = new ArrayList<>();
     private StepDescriptionClickListener mStepListener;
 
 
-    public StepAdapter(Context mcontext, List<Step> mStepList,StepDescriptionClickListener mStepListener ) {
+    public StepAdapter(Context mcontext, List<Step> mStepList, StepDescriptionClickListener mStepListener) {
         this.mContext = mcontext;
         this.mStepList = mStepList;
         this.mStepListener = mStepListener;
 
 
     }
+
     public interface StepDescriptionClickListener {
         void onItemClick(int clickedItemIndex);
     }
 
     public class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ItemStepBinding mItemStepBinding;
+
         //TextView mRecipeNameTextView = (TextView)itemView.findViewById(R.id.text_recipename);
         public StepViewHolder(ItemStepBinding binding) {
             super(binding.getRoot());
@@ -53,12 +56,12 @@ public class StepAdapter extends  RecyclerView.Adapter<StepAdapter.StepViewHolde
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
+            StepDetailActivity.isClicked = true;
             mStepListener.onItemClick(clickedPosition);
 
 
         }
     }
-
 
 
     @Override
@@ -67,6 +70,7 @@ public class StepAdapter extends  RecyclerView.Adapter<StepAdapter.StepViewHolde
         ItemStepBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_step, parent, false);
         return new StepAdapter.StepViewHolder(binding);
     }
+
     @Override
     public void onBindViewHolder(StepAdapter.StepViewHolder holder, int position) {
         Step currentStep = mStepList.get(position);
@@ -80,7 +84,6 @@ public class StepAdapter extends  RecyclerView.Adapter<StepAdapter.StepViewHolde
         else
             return 0;
     }
-
 
 
 }

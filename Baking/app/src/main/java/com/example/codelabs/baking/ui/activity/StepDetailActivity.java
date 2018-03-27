@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.example.codelabs.baking.R;
 import com.example.codelabs.baking.model.Recipe;
@@ -37,6 +37,7 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
     FragmentTransaction fragmentTransaction;
     private Step mStepObject, mStepObjectBackup;
     private Recipe mClickedRecipe, mClickedRecipeBackup;
+    public static boolean isClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +46,29 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
         if (this.getResources().getBoolean(R.bool.isTablet) && RecipeUtils.isLandscape(this)) {
             finish();
         }
-        if (savedInstanceState != null) {
-            videoPlayerfragment = (VideoPlayerFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT);
-            stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT);
-        }
-        else
-        {
-            videoPlayerfragment = new VideoPlayerFragment();
-            stepDetailFragment = new StepDetailFragment();
-        }
 
+        if (isClicked) {
+            Intent stepIntent = getIntent();
+            mStepObjectBackup = stepIntent.getParcelableExtra(EXTRA_STEP_POSITION);
+            mClickedRecipeBackup = stepIntent.getParcelableExtra(EXTRA_RECIPE_ID);
+
+        } else {
+
+            if (savedInstanceState != null) {
+                videoPlayerfragment = (VideoPlayerFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT);
+                stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT);
+                mStepObject = savedInstanceState.getParcelable(KEY_STEP_POSITION);
+                mClickedRecipe = savedInstanceState.getParcelable(KEY_RECIPE_ID);
+
+            } else {
+                videoPlayerfragment = new VideoPlayerFragment();
+                stepDetailFragment = new StepDetailFragment();
+                mStepObject = mStepObjectBackup;
+                mClickedRecipe = mClickedRecipeBackup;
+            }
+
+
+        }
     }
 
 
@@ -65,41 +79,36 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
             getSupportFragmentManager().putFragment(outState, KEY_VIDEO_PLAYER_FRAGMENT, videoPlayerfragment);
         if (stepDetailFragment.isAdded())
             getSupportFragmentManager().putFragment(outState, KEY_STEP_DETAIL_FRAGMENT, stepDetailFragment);
-        outState.putParcelable(KEY_STEP_POSITION, mStepObject);
-        Toast.makeText(this,"osis-steppu" + mStepObject.getmId(),Toast.LENGTH_LONG).show();
-        outState.putParcelable(KEY_RECIPE_ID, mClickedRecipe);
+        if (mStepObject == null) {
+            outState.putParcelable(KEY_STEP_POSITION, mStepObjectBackup);
+            outState.putParcelable(KEY_RECIPE_ID, mClickedRecipeBackup);
+        } else {
+            outState.putParcelable(KEY_STEP_POSITION, mStepObject);
+            outState.putParcelable(KEY_RECIPE_ID, stepDetailFragment.getmClickedRecipe());
+        }
 
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        FrameLayout fm = (FrameLayout) findViewById(R.id.main_media_frame);
         if (savedInstanceState.getParcelable(KEY_STEP_POSITION) != null) {
             mStepObject = savedInstanceState.getParcelable(KEY_STEP_POSITION);
-        } else {
-            mStepObject = mStepObjectBackup;
         }
         if (savedInstanceState.getParcelable(KEY_RECIPE_ID) != null) {
             mClickedRecipe = savedInstanceState.getParcelable(KEY_RECIPE_ID);
-        } else {
-            mClickedRecipe = mClickedRecipeBackup;
         }
         fragmentManager = getSupportFragmentManager();
-        if(getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT) != null)
-        {
+        if (getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT) != null) {
             videoPlayerfragment = (VideoPlayerFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_VIDEO_PLAYER_FRAGMENT);
-        }
-        else
-        {
+        } else {
             videoPlayerfragment = new VideoPlayerFragment();
 
         }
-        if( getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT) != null)
-        {
+        if (getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT) != null) {
             stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_STEP_DETAIL_FRAGMENT);
-        }
-        else
-        {
+        } else {
             stepDetailFragment = new StepDetailFragment();
         }
         videoPlayerfragment.setmStepObject(mStepObject);
@@ -109,43 +118,40 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
         stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        if(!(RecipeUtils.isLandscape(StepDetailActivity.this)))
-        {
-            if(videoPlayerfragment.isAdded())
-            {
-                fragmentTransaction.remove(videoPlayerfragment);
+        if (!(RecipeUtils.isLandscape(StepDetailActivity.this))) {
+            fm.setVisibility(View.VISIBLE);
+            if (videoPlayerfragment.isAdded()) {
+                //fragmentTransaction.remove(videoPlayerfragment);
             }
-            if(stepDetailFragment.isAdded())
-            {
-                fragmentTransaction.remove(stepDetailFragment);
+            if (stepDetailFragment.isAdded()) {
+                //fragmentTransaction.remove(stepDetailFragment);
             }
-            fragmentTransaction.replace(R.id.frame_media_playerView,videoPlayerfragment);
+            fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment);
             fragmentTransaction.replace(R.id.frame_description, stepDetailFragment);
 
-        }
-        else
-        {
-            if(videoPlayerfragment.isAdded())
-            {
+        } else {
+            if (videoPlayerfragment.isAdded()) {
                 fragmentTransaction.remove(videoPlayerfragment);
             }
-            if(stepDetailFragment.isAdded())
-            {
+            if (stepDetailFragment.isAdded()) {
                 fragmentTransaction.remove(stepDetailFragment);
             }
-            fragmentTransaction.replace(R.id.frame_media_playerView,videoPlayerfragment);
+            fragmentTransaction.replace(R.id.frame_media_playerView, videoPlayerfragment);
         }
         fragmentTransaction.commit();
+        getSupportActionBar().setTitle(mClickedRecipe.getmRecipeName());
     }
 
 
     @Override
     public void sendVideoUrl(Step mStepooo) {
-        videoPlayerfragment.trigger(mStepooo.getmVideoUrl(),mStepooo.getmThumbNailUrl());
+        mStepObject = mStepooo;
+        videoPlayerfragment.trigger(mStepooo.getmVideoUrl(), mStepooo.getmThumbNailUrl());
     }
 
     @Override
     public void sendDescription(Step mStepObject) {
+        this.mStepObject = mStepObject;
         stepDetailFragment.setDescription(mStepObject.getmDescription());
 
     }
@@ -153,15 +159,22 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
     @Override
     protected void onResume() {
         super.onResume();
-        Intent stepIntent = getIntent();
-        mStepObject = mStepObjectBackup = stepIntent.getParcelableExtra(EXTRA_STEP_POSITION);
-        mClickedRecipe = mClickedRecipeBackup = stepIntent.getParcelableExtra(EXTRA_RECIPE_ID);
-        getSupportActionBar().setTitle(mClickedRecipe.getmRecipeName());
-        videoPlayerfragment.setmStepObject(mStepObject);
-        videoPlayerfragment.setMediaUrl(mStepObject.getmVideoUrl());
-        videoPlayerfragment.setmThumbnailUrl(mStepObject.getmThumbNailUrl());
-        stepDetailFragment.setStepObject(mStepObject);
-        stepDetailFragment.setStepClickedRecipeObject(mClickedRecipe);
+        //getSupportActionBar().setTitle(mClickedRecipe.getmRecipeName());
+        if (isClicked) {
+            videoPlayerfragment = new VideoPlayerFragment();
+            stepDetailFragment = new StepDetailFragment();
+            mClickedRecipe = mClickedRecipeBackup;
+            stepDetailFragment.setStepClickedRecipeObject(mClickedRecipeBackup);
+            stepDetailFragment.setStepObject(mStepObjectBackup);
+            videoPlayerfragment.setmStepObject(mStepObjectBackup);
+            videoPlayerfragment.setMediaUrl(mStepObjectBackup.getmVideoUrl());
+            videoPlayerfragment.setmThumbnailUrl(mStepObjectBackup.getmThumbNailUrl());
+            getSupportActionBar().setTitle(mClickedRecipeBackup.getmRecipeName());
+            isClicked = false;
+
+        }
+
+
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         if (!(RecipeUtils.isLandscape(StepDetailActivity.this))) {
@@ -172,7 +185,7 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
                     R.id.frame_media_playerView, videoPlayerfragment);
         }
         fragmentTransaction.commit();
-        Toast.makeText(this, "motha motha" + videoPlayerfragment.videoUri, Toast.LENGTH_SHORT).show();
+
     }
 }
 
